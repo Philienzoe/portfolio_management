@@ -1,0 +1,83 @@
+@Ipms.Api_HostAddress = http://localhost:5190
+
+GET {{Ipms.Api_HostAddress}}/api/health
+Accept: application/json
+
+###
+
+POST {{Ipms.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "Alice123!"
+}
+
+###
+
+GET {{Ipms.Api_HostAddress}}/api/auth/me
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+GET {{Ipms.Api_HostAddress}}/api/users/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+GET {{Ipms.Api_HostAddress}}/api/instruments
+Accept: application/json
+
+###
+
+GET {{Ipms.Api_HostAddress}}/api/analytics/users/1/portfolio-values
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+GET {{Ipms.Api_HostAddress}}/api/market-data/scheduler-status
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+POST {{Ipms.Api_HostAddress}}/api/market-data/import/by-ticker
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "tickerSymbol": "NVDA",
+  "createIfMissing": true,
+  "range": "1mo",
+  "interval": "1d"
+}
+
+###
+
+POST {{Ipms.Api_HostAddress}}/api/market-data/import/all
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "range": "6mo",
+  "interval": "1d"
+}
+
+###
+
+POST {{Ipms.Api_HostAddress}}/api/portfolios/1/transactions
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "instrumentId": 1,
+  "transactionType": "Buy",
+  "quantity": 1,
+  "pricePerUnit": 190.2500,
+  "transactionDate": "2026-04-03T10:30:00Z",
+  "fees": 2.50,
+  "notes": "Sample top-up order"
+}

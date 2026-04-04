@@ -8,7 +8,6 @@ SELECT
     last_name,
     created_at
 FROM USERS
-WHERE email LIKE 'is5413.demo%@example.com'
 ORDER BY email;
 
 -- 2. Show their portfolios
@@ -20,7 +19,6 @@ SELECT
     p.created_at
 FROM PORTFOLIOS p
 JOIN USERS u ON u.user_id = p.user_id
-WHERE u.email LIKE 'is5413.demo%@example.com'
 ORDER BY u.email;
 
 -- 3. Show all holdings with market value
@@ -37,7 +35,6 @@ FROM PORTFOLIO_HOLDINGS ph
 JOIN PORTFOLIOS p ON p.portfolio_id = ph.portfolio_id
 JOIN USERS u ON u.user_id = p.user_id
 JOIN FINANCIAL_INSTRUMENTS fi ON fi.instrument_id = ph.instrument_id
-WHERE u.email LIKE 'is5413.demo%@example.com'
 ORDER BY u.email, market_value DESC;
 
 -- 4. Portfolio totals
@@ -50,7 +47,6 @@ FROM PORTFOLIOS p
 JOIN USERS u ON u.user_id = p.user_id
 LEFT JOIN PORTFOLIO_HOLDINGS ph ON ph.portfolio_id = p.portfolio_id
 LEFT JOIN FINANCIAL_INSTRUMENTS fi ON fi.instrument_id = ph.instrument_id
-WHERE u.email LIKE 'is5413.demo%@example.com'
 GROUP BY u.email, p.portfolio_name
 ORDER BY u.email;
 
@@ -63,4 +59,3 @@ FROM PORTFOLIO_HOLDINGS ph
 JOIN PORTFOLIOS p ON p.portfolio_id = ph.portfolio_id
 JOIN USERS u ON u.user_id = p.user_id
 JOIN FINANCIAL_INSTRUMENTS fi ON fi.instrument_id = ph.instrument_id
-WHERE u.email LIKE 'is5413.demo%@example.com';

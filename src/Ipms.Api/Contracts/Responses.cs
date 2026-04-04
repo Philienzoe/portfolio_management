@@ -99,6 +99,8 @@ public sealed record InstrumentResponse(
     decimal? ExpenseRatio,
     string? Issuer,
     string? TrackingIndex,
+    string? QuoteCurrency,
+    string? BaseAssetSymbol,
     string? Blockchain,
     string? HashingAlgorithm,
     decimal? MaxSupply,

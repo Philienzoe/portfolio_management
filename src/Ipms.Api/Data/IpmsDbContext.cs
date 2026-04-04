@@ -109,6 +109,7 @@ public sealed class IpmsDbContext(DbContextOptions<IpmsDbContext> options) : DbC
             entity.Property(e => e.InstrumentId).HasColumnName("instrument_id").ValueGeneratedNever();
             entity.Property(e => e.Sector).HasColumnName("sector").HasMaxLength(100);
             entity.Property(e => e.Industry).HasColumnName("industry").HasMaxLength(100);
+            entity.Property(e => e.QuoteCurrency).HasColumnName("quote_currency").HasMaxLength(10);
             entity.Property(e => e.MarketCap).HasColumnName("market_cap").HasPrecision(19, 2);
             entity.Property(e => e.PeRatio).HasColumnName("pe_ratio").HasPrecision(8, 4);
             entity.Property(e => e.DividendYield).HasColumnName("dividend_yield").HasPrecision(8, 4);
@@ -135,6 +136,7 @@ public sealed class IpmsDbContext(DbContextOptions<IpmsDbContext> options) : DbC
             entity.Property(e => e.ExpenseRatio).HasColumnName("expense_ratio").HasPrecision(8, 4);
             entity.Property(e => e.Issuer).HasColumnName("issuer").HasMaxLength(120);
             entity.Property(e => e.TrackingIndex).HasColumnName("tracking_index").HasMaxLength(120);
+            entity.Property(e => e.QuoteCurrency).HasColumnName("quote_currency").HasMaxLength(10);
             entity.Property(e => e.ExchangeId).HasColumnName("exchange_id");
 
             entity.HasOne(e => e.Instrument)
@@ -154,6 +156,8 @@ public sealed class IpmsDbContext(DbContextOptions<IpmsDbContext> options) : DbC
             entity.HasKey(e => e.InstrumentId);
 
             entity.Property(e => e.InstrumentId).HasColumnName("instrument_id").ValueGeneratedNever();
+            entity.Property(e => e.BaseAssetSymbol).HasColumnName("base_asset_symbol").HasMaxLength(40);
+            entity.Property(e => e.QuoteCurrency).HasColumnName("quote_currency").HasMaxLength(10);
             entity.Property(e => e.Blockchain).HasColumnName("blockchain").HasMaxLength(100);
             entity.Property(e => e.HashingAlgorithm).HasColumnName("hashing_algorithm").HasMaxLength(100);
             entity.Property(e => e.MaxSupply).HasColumnName("max_supply").HasPrecision(28, 8);

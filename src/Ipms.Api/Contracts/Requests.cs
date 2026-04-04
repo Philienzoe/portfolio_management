@@ -38,6 +38,7 @@ public sealed record CreateStockRequest(
     decimal? CurrentPrice,
     string? Sector,
     string? Industry,
+    string? QuoteCurrency,
     decimal? MarketCap,
     decimal? PeRatio,
     decimal? DividendYield,
@@ -51,12 +52,15 @@ public sealed record CreateEtfRequest(
     decimal? ExpenseRatio,
     string? Issuer,
     string? TrackingIndex,
+    string? QuoteCurrency,
     int? ExchangeId);
 
 public sealed record CreateCryptocurrencyRequest(
     string TickerSymbol,
     string Name,
     decimal? CurrentPrice,
+    string? BaseAssetSymbol,
+    string? QuoteCurrency,
     string? Blockchain,
     string? HashingAlgorithm,
     decimal? MaxSupply,

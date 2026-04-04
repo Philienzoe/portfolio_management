@@ -105,6 +105,9 @@ public static class InstrumentEndpoints
             return Results.BadRequest(new { message = $"Exchange {request.ExchangeId} was not found." });
         }
 
+        var stockQuoteCurrency = NormalizeQuoteCurrency(request.QuoteCurrency) ??
+            await ResolveQuoteCurrencyFromExchangeAsync(db, request.ExchangeId, cancellationToken);
+
         var instrument = new FinancialInstrument
         {
             TickerSymbol = ticker,
@@ -116,6 +119,7 @@ public static class InstrumentEndpoints
             {
                 Sector = request.Sector?.Trim(),
                 Industry = request.Industry?.Trim(),
+                QuoteCurrency = stockQuoteCurrency,
                 MarketCap = request.MarketCap,
                 PeRatio = request.PeRatio,
                 DividendYield = request.DividendYield,
@@ -152,6 +156,9 @@ public static class InstrumentEndpoints
             return Results.BadRequest(new { message = $"Exchange {request.ExchangeId} was not found." });
         }
 
+        var etfQuoteCurrency = NormalizeQuoteCurrency(request.QuoteCurrency) ??
+            await ResolveQuoteCurrencyFromExchangeAsync(db, request.ExchangeId, cancellationToken);
+
         var instrument = new FinancialInstrument
         {
             TickerSymbol = ticker,
@@ -165,6 +172,7 @@ public static class InstrumentEndpoints
                 ExpenseRatio = request.ExpenseRatio,
                 Issuer = request.Issuer?.Trim(),
                 TrackingIndex = request.TrackingIndex?.Trim(),
+                QuoteCurrency = etfQuoteCurrency,
                 ExchangeId = request.ExchangeId
             }
         };
@@ -192,15 +200,21 @@ public static class InstrumentEndpoints
             return Results.Conflict(new { message = $"Instrument '{ticker}' already exists." });
         }
 
+        var (baseAssetSymbol, quoteCurrency) = ParseCryptoPair(ticker);
+        var normalizedQuoteCurrency = request.QuoteCurrency?.Trim().ToUpperInvariant() ?? quoteCurrency;
+        var normalizedName = NormalizeCryptoName(request.Name, normalizedQuoteCurrency);
+
         var instrument = new FinancialInstrument
         {
             TickerSymbol = ticker,
             InstrumentType = InstrumentTypes.Crypto,
-            Name = request.Name.Trim(),
+            Name = normalizedName,
             CurrentPrice = request.CurrentPrice,
             LastUpdated = DateTime.UtcNow,
             Cryptocurrency = new Cryptocurrency
             {
+                BaseAssetSymbol = request.BaseAssetSymbol?.Trim().ToUpperInvariant() ?? baseAssetSymbol,
+                QuoteCurrency = normalizedQuoteCurrency,
                 Blockchain = request.Blockchain?.Trim(),
                 HashingAlgorithm = request.HashingAlgorithm?.Trim(),
                 MaxSupply = request.MaxSupply,
@@ -279,4 +293,60 @@ public static class InstrumentEndpoints
         CancellationToken cancellationToken) =>
         IncludeInstrumentGraph(db.FinancialInstruments.AsNoTracking())
             .SingleOrDefaultAsync(item => item.InstrumentId == instrumentId, cancellationToken);
+
+    private static string? NormalizeQuoteCurrency(string? quoteCurrency) =>
+        string.IsNullOrWhiteSpace(quoteCurrency) ? null : quoteCurrency.Trim().ToUpperInvariant();
+
+    private static async Task<string?> ResolveQuoteCurrencyFromExchangeAsync(
+        IpmsDbContext db,
+        int? exchangeId,
+        CancellationToken cancellationToken)
+    {
+        if (exchangeId is null)
+        {
+            return null;
+        }
+
+        var micCode = await db.StockExchanges
+            .Where(exchange => exchange.ExchangeId == exchangeId.Value)
+            .Select(exchange => exchange.MicCode)
+            .SingleOrDefaultAsync(cancellationToken);
+
+        return MapQuoteCurrencyFromMicCode(micCode);
+    }
+
+    private static string? MapQuoteCurrencyFromMicCode(string? micCode) =>
+        micCode switch
+        {
+            "XHKG" => "HKD",
+            "XNAS" or "XNYS" => "USD",
+            _ => null
+        };
+
+    private static (string BaseAssetSymbol, string? QuoteCurrency) ParseCryptoPair(string ticker)
+    {
+        var separatorIndex = ticker.LastIndexOf("-");
+        if (separatorIndex <= 0 || separatorIndex >= ticker.Length - 1)
+        {
+            return (ticker, null);
+        }
+
+        return (
+            ticker[..separatorIndex],
+            ticker[(separatorIndex + 1)..]);
+    }
+
+    private static string NormalizeCryptoName(string name, string? quoteCurrency)
+    {
+        var trimmedName = name.Trim();
+        if (string.IsNullOrWhiteSpace(quoteCurrency))
+        {
+            return trimmedName;
+        }
+
+        var suffix = $" {quoteCurrency}";
+        return trimmedName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase)
+            ? trimmedName[..^suffix.Length].Trim()
+            : trimmedName;
+    }
 }

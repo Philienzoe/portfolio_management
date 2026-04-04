@@ -29,6 +29,7 @@ public sealed class Stock
     public int InstrumentId { get; set; }
     public string? Sector { get; set; }
     public string? Industry { get; set; }
+    public string? QuoteCurrency { get; set; }
     public decimal? MarketCap { get; set; }
     public decimal? PeRatio { get; set; }
     public decimal? DividendYield { get; set; }
@@ -45,6 +46,7 @@ public sealed class Etf
     public decimal? ExpenseRatio { get; set; }
     public string? Issuer { get; set; }
     public string? TrackingIndex { get; set; }
+    public string? QuoteCurrency { get; set; }
     public int? ExchangeId { get; set; }
 
     public FinancialInstrument Instrument { get; set; } = null!;
@@ -54,6 +56,8 @@ public sealed class Etf
 public sealed class Cryptocurrency
 {
     public int InstrumentId { get; set; }
+    public string? BaseAssetSymbol { get; set; }
+    public string? QuoteCurrency { get; set; }
     public string? Blockchain { get; set; }
     public string? HashingAlgorithm { get; set; }
     public decimal? MaxSupply { get; set; }

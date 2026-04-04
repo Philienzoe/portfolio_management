@@ -176,6 +176,14 @@ public sealed class YahooFinanceMarketDataService(
         }
 
         instrument.Name = FirstNonEmpty(meta.LongName, meta.ShortName, instrument.Name, ticker)!;
+        if (instrument.Cryptocurrency is not null)
+        {
+            var cryptoParts = ParseCryptoPair(ticker);
+            instrument.Name = NormalizeCryptoName(instrument.Name, cryptoParts.BaseAssetSymbol, cryptoParts.QuoteCurrency);
+            instrument.Cryptocurrency.BaseAssetSymbol = FirstNonEmpty(instrument.Cryptocurrency.BaseAssetSymbol, cryptoParts.BaseAssetSymbol);
+            instrument.Cryptocurrency.QuoteCurrency = FirstNonEmpty(instrument.Cryptocurrency.QuoteCurrency, cryptoParts.QuoteCurrency);
+        }
+
         instrument.CurrentPrice = meta.RegularMarketPrice ?? quote.Close?.LastOrDefault(value => value is not null);
         instrument.LastUpdated = DateTime.UtcNow;
         ApplyBestEffortMetadata(instrument, meta);
@@ -251,17 +259,23 @@ public sealed class YahooFinanceMarketDataService(
             case InstrumentTypes.Stock:
                 instrument.Stock = new Stock
                 {
-                    ExchangeId = await ResolveExchangeIdAsync(meta, cancellationToken)
+                    ExchangeId = await ResolveExchangeIdAsync(meta, cancellationToken),
+                    QuoteCurrency = NormalizeQuoteCurrency(meta.Currency)
                 };
                 break;
             case InstrumentTypes.Etf:
                 instrument.Etf = new Etf
                 {
-                    ExchangeId = await ResolveExchangeIdAsync(meta, cancellationToken)
+                    ExchangeId = await ResolveExchangeIdAsync(meta, cancellationToken),
+                    QuoteCurrency = NormalizeQuoteCurrency(meta.Currency)
                 };
                 break;
             default:
+                var cryptoParts = ParseCryptoPair(ticker);
                 instrument.Cryptocurrency = new Cryptocurrency();
+                instrument.Name = NormalizeCryptoName(instrument.Name, cryptoParts.BaseAssetSymbol, cryptoParts.QuoteCurrency);
+                instrument.Cryptocurrency.BaseAssetSymbol = cryptoParts.BaseAssetSymbol;
+                instrument.Cryptocurrency.QuoteCurrency = cryptoParts.QuoteCurrency;
                 break;
         }
 
@@ -277,14 +291,32 @@ public sealed class YahooFinanceMarketDataService(
             instrument.Stock.Industry = meta.FullExchangeName;
         }
 
+        if (instrument.Stock is not null && string.IsNullOrWhiteSpace(instrument.Stock.QuoteCurrency))
+        {
+            instrument.Stock.QuoteCurrency = NormalizeQuoteCurrency(meta.Currency);
+        }
+
         if (instrument.Etf is not null && string.IsNullOrWhiteSpace(instrument.Etf.Issuer))
         {
             instrument.Etf.Issuer = meta.FullExchangeName;
         }
 
+        if (instrument.Etf is not null && string.IsNullOrWhiteSpace(instrument.Etf.QuoteCurrency))
+        {
+            instrument.Etf.QuoteCurrency = NormalizeQuoteCurrency(meta.Currency);
+        }
+
         if (instrument.Cryptocurrency is not null && string.IsNullOrWhiteSpace(instrument.Cryptocurrency.Blockchain))
         {
             instrument.Cryptocurrency.Blockchain = meta.ExchangeName;
+        }
+
+        if (instrument.Cryptocurrency is not null)
+        {
+            var cryptoParts = ParseCryptoPair(instrument.TickerSymbol);
+            instrument.Cryptocurrency.BaseAssetSymbol = FirstNonEmpty(instrument.Cryptocurrency.BaseAssetSymbol, cryptoParts.BaseAssetSymbol);
+            instrument.Cryptocurrency.QuoteCurrency = FirstNonEmpty(instrument.Cryptocurrency.QuoteCurrency, cryptoParts.QuoteCurrency);
+            instrument.Name = NormalizeCryptoName(instrument.Name, cryptoParts.BaseAssetSymbol, cryptoParts.QuoteCurrency);
         }
     }
 
@@ -376,8 +408,39 @@ public sealed class YahooFinanceMarketDataService(
         return InstrumentTypes.Stock;
     }
 
+    private static (string BaseAssetSymbol, string? QuoteCurrency) ParseCryptoPair(string ticker)
+    {
+        var normalized = NormalizeTicker(ticker);
+        var separatorIndex = normalized.LastIndexOf("-");
+        if (separatorIndex <= 0 || separatorIndex >= normalized.Length - 1)
+        {
+            return (normalized, null);
+        }
+
+        return (
+            normalized[..separatorIndex],
+            normalized[(separatorIndex + 1)..]);
+    }
+
+    private static string NormalizeCryptoName(string? name, string baseAssetSymbol, string? quoteCurrency)
+    {
+        var candidate = FirstNonEmpty(name, baseAssetSymbol) ?? baseAssetSymbol;
+        if (string.IsNullOrWhiteSpace(quoteCurrency))
+        {
+            return candidate;
+        }
+
+        var suffix = $" {quoteCurrency}";
+        return candidate.EndsWith(suffix, StringComparison.OrdinalIgnoreCase)
+            ? candidate[..^suffix.Length].Trim()
+            : candidate;
+    }
+
     private static string NormalizeTicker(string? tickerSymbol) =>
         string.IsNullOrWhiteSpace(tickerSymbol) ? string.Empty : tickerSymbol.Trim().ToUpperInvariant();
+
+    private static string? NormalizeQuoteCurrency(string? quoteCurrency) =>
+        string.IsNullOrWhiteSpace(quoteCurrency) ? null : quoteCurrency.Trim().ToUpperInvariant();
 
     private static string? FirstNonEmpty(params string?[] values) =>
         values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value))?.Trim();

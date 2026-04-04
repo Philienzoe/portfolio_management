@@ -56,6 +56,8 @@ public static class ApiMappings
             instrument.Etf?.ExpenseRatio,
             instrument.Etf?.Issuer,
             instrument.Etf?.TrackingIndex,
+            instrument.Stock?.QuoteCurrency ?? instrument.Etf?.QuoteCurrency ?? instrument.Cryptocurrency?.QuoteCurrency,
+            instrument.Cryptocurrency?.BaseAssetSymbol,
             instrument.Cryptocurrency?.Blockchain,
             instrument.Cryptocurrency?.HashingAlgorithm,
             instrument.Cryptocurrency?.MaxSupply,

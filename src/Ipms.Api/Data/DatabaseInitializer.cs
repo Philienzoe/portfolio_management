@@ -21,6 +21,7 @@ public sealed class DatabaseInitializer(
     {
         await EnsureDatabaseExistsAsync(cancellationToken);
         await _dbContext.Database.EnsureCreatedAsync(cancellationToken);
+        await EnsureSchemaUpdatesAsync(cancellationToken);
         await RepairSeedUserPasswordsAsync(cancellationToken);
 
         if (await _dbContext.Users.AnyAsync(cancellationToken))
@@ -59,6 +60,95 @@ END
 
         await using var command = new SqlCommand(commandText, connection);
         await command.ExecuteNonQueryAsync(cancellationToken);
+    }
+
+    private async Task EnsureSchemaUpdatesAsync(CancellationToken cancellationToken)
+    {
+        const string addColumnsCommand = """
+IF COL_LENGTH('STOCKS', 'quote_currency') IS NULL
+BEGIN
+    ALTER TABLE STOCKS ADD quote_currency NVARCHAR(10) NULL;
+END;
+
+IF COL_LENGTH('ETFS', 'quote_currency') IS NULL
+BEGIN
+    ALTER TABLE ETFS ADD quote_currency NVARCHAR(10) NULL;
+END;
+
+IF COL_LENGTH('CRYPTOCURRENCIES', 'base_asset_symbol') IS NULL
+BEGIN
+    ALTER TABLE CRYPTOCURRENCIES ADD base_asset_symbol NVARCHAR(40) NULL;
+END;
+
+IF COL_LENGTH('CRYPTOCURRENCIES', 'quote_currency') IS NULL
+BEGIN
+    ALTER TABLE CRYPTOCURRENCIES ADD quote_currency NVARCHAR(10) NULL;
+END;
+""";
+
+        const string backfillInstrumentCurrenciesCommand = """
+UPDATE s
+SET s.quote_currency = CASE
+    WHEN sx.mic_code = 'XHKG' THEN 'HKD'
+    WHEN sx.mic_code IN ('XNAS', 'XNYS') THEN 'USD'
+    WHEN fi.ticker_symbol LIKE '____.HK' THEN 'HKD'
+    ELSE 'USD'
+END
+FROM STOCKS s
+JOIN FINANCIAL_INSTRUMENTS fi
+    ON fi.instrument_id = s.instrument_id
+LEFT JOIN STOCK_EXCHANGES sx
+    ON sx.exchange_id = s.exchange_id
+WHERE s.quote_currency IS NULL;
+
+UPDATE e
+SET e.quote_currency = CASE
+    WHEN sx.mic_code = 'XHKG' THEN 'HKD'
+    WHEN sx.mic_code IN ('XNAS', 'XNYS') THEN 'USD'
+    WHEN fi.ticker_symbol LIKE '____.HK' THEN 'HKD'
+    ELSE 'USD'
+END
+FROM ETFS e
+JOIN FINANCIAL_INSTRUMENTS fi
+    ON fi.instrument_id = e.instrument_id
+LEFT JOIN STOCK_EXCHANGES sx
+    ON sx.exchange_id = e.exchange_id
+WHERE e.quote_currency IS NULL;
+""";
+
+        const string backfillCommand = """
+UPDATE c
+SET
+    base_asset_symbol = CASE
+        WHEN CHARINDEX('-', fi.ticker_symbol) > 0 THEN LEFT(fi.ticker_symbol, CHARINDEX('-', fi.ticker_symbol) - 1)
+        ELSE fi.ticker_symbol
+    END,
+    quote_currency = CASE
+        WHEN CHARINDEX('-', fi.ticker_symbol) > 0 THEN SUBSTRING(fi.ticker_symbol, CHARINDEX('-', fi.ticker_symbol) + 1, LEN(fi.ticker_symbol))
+        ELSE c.quote_currency
+    END
+FROM CRYPTOCURRENCIES c
+JOIN FINANCIAL_INSTRUMENTS fi
+    ON fi.instrument_id = c.instrument_id
+WHERE c.base_asset_symbol IS NULL
+   OR c.quote_currency IS NULL;
+""";
+
+        const string normalizeNamesCommand = """
+UPDATE fi
+SET fi.name = LEFT(fi.name, LEN(fi.name) - LEN(c.quote_currency) - 1)
+FROM FINANCIAL_INSTRUMENTS fi
+JOIN CRYPTOCURRENCIES c
+    ON c.instrument_id = fi.instrument_id
+WHERE fi.instrument_type = 'CRYPTO'
+  AND c.quote_currency IS NOT NULL
+  AND fi.name LIKE '% ' + c.quote_currency;
+""";
+
+        await _dbContext.Database.ExecuteSqlRawAsync(addColumnsCommand, cancellationToken);
+        await _dbContext.Database.ExecuteSqlRawAsync(backfillInstrumentCurrenciesCommand, cancellationToken);
+        await _dbContext.Database.ExecuteSqlRawAsync(backfillCommand, cancellationToken);
+        await _dbContext.Database.ExecuteSqlRawAsync(normalizeNamesCommand, cancellationToken);
     }
 
     private async Task SeedReferenceDataAsync(CancellationToken cancellationToken)
@@ -152,6 +242,7 @@ END
             {
                 Sector = "Technology",
                 Industry = "Consumer Electronics",
+                QuoteCurrency = "USD",
                 MarketCap = 2900000000000m,
                 PeRatio = 29.4800m,
                 DividendYield = 0.5400m,
@@ -170,6 +261,7 @@ END
             {
                 Sector = "Technology",
                 Industry = "Software Infrastructure",
+                QuoteCurrency = "USD",
                 MarketCap = 3150000000000m,
                 PeRatio = 34.7200m,
                 DividendYield = 0.6800m,
@@ -190,6 +282,7 @@ END
                 ExpenseRatio = 0.0945m,
                 Issuer = "State Street",
                 TrackingIndex = "S&P 500",
+                QuoteCurrency = "USD",
                 Exchange = nyse
             }
         };
@@ -207,6 +300,7 @@ END
                 ExpenseRatio = 0.2000m,
                 Issuer = "Invesco",
                 TrackingIndex = "NASDAQ-100",
+                QuoteCurrency = "USD",
                 Exchange = nasdaq
             }
         };
@@ -220,6 +314,8 @@ END
             LastUpdated = utcNow,
             Cryptocurrency = new Cryptocurrency
             {
+                BaseAssetSymbol = "BTC",
+                QuoteCurrency = "USD",
                 Blockchain = "Bitcoin",
                 HashingAlgorithm = "SHA-256",
                 MaxSupply = 21000000m,
@@ -236,6 +332,8 @@ END
             LastUpdated = utcNow,
             Cryptocurrency = new Cryptocurrency
             {
+                BaseAssetSymbol = "ETH",
+                QuoteCurrency = "USD",
                 Blockchain = "Ethereum",
                 HashingAlgorithm = "Ethash",
                 CirculatingSupply = 120150000m
@@ -253,6 +351,7 @@ END
             {
                 Sector = "Communication Services",
                 Industry = "Internet Content & Information",
+                QuoteCurrency = "HKD",
                 MarketCap = 2980000000000m,
                 PeRatio = 18.6500m,
                 DividendYield = 0.9100m,
@@ -273,6 +372,7 @@ END
                 ExpenseRatio = 0.0990m,
                 Issuer = "State Street Global Advisors Asia",
                 TrackingIndex = "Hang Seng Index",
+                QuoteCurrency = "HKD",
                 Exchange = hkex
             }
         };

@@ -42,6 +42,29 @@ The initializer creates sample:
 - Historical prices
 - Transactions and live holdings
 
+## Schema Notes
+
+The instrument model now stores price currency explicitly instead of inferring it only from the exchange:
+
+- `STOCKS.quote_currency`
+- `ETFS.quote_currency`
+- `CRYPTOCURRENCIES.quote_currency`
+
+Crypto instruments are also normalized so the asset identity is separate from the quote currency:
+
+- `FINANCIAL_INSTRUMENTS.name` stores the asset name only
+- `CRYPTOCURRENCIES.base_asset_symbol` stores the base asset symbol
+- `CRYPTOCURRENCIES.quote_currency` stores the pricing currency
+
+Examples:
+
+- `BTC-USD` -> `name = Bitcoin`, `base_asset_symbol = BTC`, `quote_currency = USD`
+- `ETH-USD` -> `name = Ethereum`, `base_asset_symbol = ETH`, `quote_currency = USD`
+- `0700.HK` -> `quote_currency = HKD`
+- `NVDA` -> `quote_currency = USD`
+
+`TRANSACTIONS.total_amount` remains a SQL Server stored computed column (`quantity * price_per_unit`). It is logically derived, but SQL Server manages it automatically so it cannot become inconsistent.
+
 ## Authentication
 
 JWT bearer authentication is enabled for portfolio and analytics routes.
@@ -105,6 +128,34 @@ Default configuration is in [appsettings.json](/C:/Users/LENOVO/OneDrive/Desktop
 - refresh interval: `3` seconds
 - default range: `6mo`
 - default interval: `1d`
+
+## Market Universe Imports
+
+The repository includes import scripts for larger demo datasets:
+
+- [Import-StockcircleTop30.ps1](/C:/Users/LENOVO/OneDrive/Desktop/portfolio_management/scripts/Import-StockcircleTop30.ps1)
+- [Import-DiverseUsHkDemoAccounts.ps1](/C:/Users/LENOVO/OneDrive/Desktop/portfolio_management/scripts/Import-DiverseUsHkDemoAccounts.ps1)
+- [Import-BulkPortfolioAccounts.ps1](/C:/Users/LENOVO/OneDrive/Desktop/portfolio_management/scripts/Import-BulkPortfolioAccounts.ps1)
+- [Import-MarketUniverse.ps1](/C:/Users/LENOVO/OneDrive/Desktop/portfolio_management/scripts/Import-MarketUniverse.ps1)
+
+`Import-MarketUniverse.ps1` imports:
+
+- the requested crypto ticker set
+- the current S&P 500 constituent list
+- the current top 100 Hong Kong stock list
+
+Run it with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Import-MarketUniverse.ps1
+```
+
+After the latest import and normalization work, the database contains:
+
+- explicit quote currencies for stocks, ETFs, and crypto
+- `48` crypto instruments
+- `100` Hong Kong stocks
+- `503` S&P 500 constituents
 
 ## Stockcircle Demo Data
 

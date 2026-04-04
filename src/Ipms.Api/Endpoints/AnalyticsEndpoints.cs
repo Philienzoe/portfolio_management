@@ -17,6 +17,8 @@ public static class AnalyticsEndpoints
         analytics.MapGet("/portfolios/{portfolioId:int}/profit-loss", GetProfitLoss);
         analytics.MapGet("/portfolios/{portfolioId:int}/sector-exposure", GetSectorExposure);
         analytics.MapGet("/instruments/{instrumentId:int}/historical-performance", GetHistoricalPerformance);
+        analytics.MapGet("/instruments/{instrumentId:int}/intraday-returns", GetIntradayReturns);
+        analytics.MapGet("/instruments/{instrumentId:int}/realtime-returns", GetRealtimeReturns);
 
         return app;
     }
@@ -152,8 +154,12 @@ public static class AnalyticsEndpoints
             from holding in db.PortfolioHoldings.AsNoTracking()
             join stock in db.Stocks.AsNoTracking() on holding.InstrumentId equals stock.InstrumentId
             join instrument in db.FinancialInstruments.AsNoTracking() on holding.InstrumentId equals instrument.InstrumentId
+            join industry in db.Industries.AsNoTracking() on stock.IndustryId equals industry.IndustryId into industryJoin
+            from industry in industryJoin.DefaultIfEmpty()
+            join sector in db.Sectors.AsNoTracking() on industry.SectorId equals sector.SectorId into sectorJoin
+            from sector in sectorJoin.DefaultIfEmpty()
             where holding.PortfolioId == portfolioId
-            group new { holding, stock, instrument } by stock.Sector ?? "Unclassified" into grouped
+            group new { holding, stock, instrument } by sector.SectorName ?? "Unclassified" into grouped
             orderby grouped.Sum(item => item.holding.Quantity * (item.instrument.CurrentPrice ?? 0m)) descending
             select new
             {
@@ -206,6 +212,156 @@ public static class AnalyticsEndpoints
                 group.Min(item => item.LowPrice)))
             .OrderBy(item => item.Year)
             .ThenBy(item => item.Month)
+            .ToList();
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> GetIntradayReturns(
+        int instrumentId,
+        int? minutes,
+        ClaimsPrincipal currentUser,
+        IpmsDbContext db,
+        CancellationToken cancellationToken)
+    {
+        if (currentUser.GetCurrentUserId() is null)
+        {
+            return Results.Unauthorized();
+        }
+
+        var instrumentExists = await db.FinancialInstruments.AnyAsync(
+            instrument => instrument.InstrumentId == instrumentId,
+            cancellationToken);
+
+        if (!instrumentExists)
+        {
+            return Results.NotFound(new { message = $"Instrument {instrumentId} was not found." });
+        }
+
+        var windowMinutes = Math.Clamp(minutes ?? 60, 1, 1440);
+        var windowStartUtc = DateTime.UtcNow.AddMinutes(-windowMinutes);
+
+        var intradayPrices = await db.IntradayPrices
+            .AsNoTracking()
+            .Where(price => price.InstrumentId == instrumentId && price.PriceTimeUtc >= windowStartUtc)
+            .OrderBy(price => price.PriceTimeUtc)
+            .ToListAsync(cancellationToken);
+
+        if (intradayPrices.Count == 0)
+        {
+            return Results.Ok(Array.Empty<IntradayReturnResponse>());
+        }
+
+        var earliestSnapshotDate = DateOnly.FromDateTime(intradayPrices.Min(price => price.PriceTimeUtc).Date);
+        var dailyCloses = await db.HistoricalPrices
+            .AsNoTracking()
+            .Where(price => price.InstrumentId == instrumentId && price.PriceDate <= earliestSnapshotDate.AddDays(1))
+            .OrderBy(price => price.PriceDate)
+            .Select(price => new { price.PriceDate, price.ClosePrice })
+            .ToListAsync(cancellationToken);
+
+        var result = intradayPrices
+            .Select(price =>
+            {
+                var snapshotDate = DateOnly.FromDateTime(price.PriceTimeUtc.Date);
+                var previousClose = dailyCloses
+                    .LastOrDefault(item => item.PriceDate < snapshotDate)
+                    ?.ClosePrice;
+
+                var priceChange = previousClose is null
+                    ? (decimal?)null
+                    : price.ClosePrice - previousClose.Value;
+
+                var percentageChange = previousClose is null || previousClose == 0
+                    ? (decimal?)null
+                    : Math.Round((priceChange!.Value * 100m) / previousClose.Value, 4);
+
+                return new IntradayReturnResponse(
+                    instrumentId,
+                    price.PriceTimeUtc,
+                    price.OpenPrice,
+                    price.HighPrice,
+                    price.LowPrice,
+                    price.ClosePrice,
+                    price.Volume,
+                    previousClose,
+                    priceChange,
+                    percentageChange);
+            })
+            .ToList();
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> GetRealtimeReturns(
+        int instrumentId,
+        int? seconds,
+        ClaimsPrincipal currentUser,
+        IpmsDbContext db,
+        CancellationToken cancellationToken)
+    {
+        if (currentUser.GetCurrentUserId() is null)
+        {
+            return Results.Unauthorized();
+        }
+
+        var instrumentExists = await db.FinancialInstruments.AnyAsync(
+            instrument => instrument.InstrumentId == instrumentId,
+            cancellationToken);
+
+        if (!instrumentExists)
+        {
+            return Results.NotFound(new { message = $"Instrument {instrumentId} was not found." });
+        }
+
+        var windowSeconds = Math.Clamp(seconds ?? 300, 1, 86400);
+        var windowStartUtc = DateTime.UtcNow.AddSeconds(-windowSeconds);
+
+        var snapshots = await db.RealtimePriceSnapshots
+            .AsNoTracking()
+            .Where(snapshot => snapshot.InstrumentId == instrumentId && snapshot.SnapshotTimeUtc >= windowStartUtc)
+            .OrderBy(snapshot => snapshot.SnapshotTimeUtc)
+            .ToListAsync(cancellationToken);
+
+        if (snapshots.Count == 0)
+        {
+            return Results.Ok(Array.Empty<RealtimeReturnResponse>());
+        }
+
+        var earliestSnapshotDate = DateOnly.FromDateTime(snapshots.Min(snapshot => snapshot.SnapshotTimeUtc).Date);
+        var dailyCloses = await db.HistoricalPrices
+            .AsNoTracking()
+            .Where(price => price.InstrumentId == instrumentId && price.PriceDate <= earliestSnapshotDate.AddDays(1))
+            .OrderBy(price => price.PriceDate)
+            .Select(price => new { price.PriceDate, price.ClosePrice })
+            .ToListAsync(cancellationToken);
+
+        var result = snapshots
+            .Select(snapshot =>
+            {
+                var snapshotDate = DateOnly.FromDateTime(snapshot.SnapshotTimeUtc.Date);
+                var previousClose = dailyCloses
+                    .LastOrDefault(item => item.PriceDate < snapshotDate)
+                    ?.ClosePrice;
+
+                var priceChange = previousClose is null
+                    ? (decimal?)null
+                    : snapshot.Price - previousClose.Value;
+
+                var percentageChange = previousClose is null || previousClose == 0
+                    ? (decimal?)null
+                    : Math.Round((priceChange!.Value * 100m) / previousClose.Value, 4);
+
+                return new RealtimeReturnResponse(
+                    instrumentId,
+                    snapshot.SnapshotTimeUtc,
+                    snapshot.SourceTimeUtc,
+                    snapshot.Price,
+                    snapshot.Volume,
+                    previousClose,
+                    priceChange,
+                    percentageChange);
+            })
             .ToList();
 
         return Results.Ok(result);

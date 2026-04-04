@@ -9,6 +9,8 @@ public sealed class IpmsDbContext(DbContextOptions<IpmsDbContext> options) : DbC
     public DbSet<User> Users => Set<User>();
     public DbSet<Portfolio> Portfolios => Set<Portfolio>();
     public DbSet<StockExchange> StockExchanges => Set<StockExchange>();
+    public DbSet<Sector> Sectors => Set<Sector>();
+    public DbSet<Industry> Industries => Set<Industry>();
     public DbSet<FinancialInstrument> FinancialInstruments => Set<FinancialInstrument>();
     public DbSet<Stock> Stocks => Set<Stock>();
     public DbSet<Etf> Etfs => Set<Etf>();
@@ -16,6 +18,8 @@ public sealed class IpmsDbContext(DbContextOptions<IpmsDbContext> options) : DbC
     public DbSet<TransactionRecord> Transactions => Set<TransactionRecord>();
     public DbSet<PortfolioHolding> PortfolioHoldings => Set<PortfolioHolding>();
     public DbSet<HistoricalPrice> HistoricalPrices => Set<HistoricalPrice>();
+    public DbSet<IntradayPrice> IntradayPrices => Set<IntradayPrice>();
+    public DbSet<RealtimePriceSnapshot> RealtimePriceSnapshots => Set<RealtimePriceSnapshot>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -80,6 +84,33 @@ public sealed class IpmsDbContext(DbContextOptions<IpmsDbContext> options) : DbC
             entity.HasIndex(e => e.MicCode).IsUnique();
         });
 
+        modelBuilder.Entity<Sector>(entity =>
+        {
+            entity.ToTable("SECTORS");
+            entity.HasKey(e => e.SectorId);
+
+            entity.Property(e => e.SectorId).HasColumnName("sector_id");
+            entity.Property(e => e.SectorName).HasColumnName("sector_name").HasMaxLength(100).IsRequired();
+
+            entity.HasIndex(e => e.SectorName).IsUnique();
+        });
+
+        modelBuilder.Entity<Industry>(entity =>
+        {
+            entity.ToTable("INDUSTRIES");
+            entity.HasKey(e => e.IndustryId);
+
+            entity.Property(e => e.IndustryId).HasColumnName("industry_id");
+            entity.Property(e => e.IndustryName).HasColumnName("industry_name").HasMaxLength(100).IsRequired();
+            entity.Property(e => e.SectorId).HasColumnName("sector_id");
+
+            entity.HasIndex(e => e.IndustryName).IsUnique();
+            entity.HasOne(e => e.Sector)
+                .WithMany(e => e.Industries)
+                .HasForeignKey(e => e.SectorId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
         modelBuilder.Entity<FinancialInstrument>(entity =>
         {
             entity.ToTable("FINANCIAL_INSTRUMENTS", table =>
@@ -107,8 +138,7 @@ public sealed class IpmsDbContext(DbContextOptions<IpmsDbContext> options) : DbC
             entity.HasKey(e => e.InstrumentId);
 
             entity.Property(e => e.InstrumentId).HasColumnName("instrument_id").ValueGeneratedNever();
-            entity.Property(e => e.Sector).HasColumnName("sector").HasMaxLength(100);
-            entity.Property(e => e.Industry).HasColumnName("industry").HasMaxLength(100);
+            entity.Property(e => e.IndustryId).HasColumnName("industry_id");
             entity.Property(e => e.QuoteCurrency).HasColumnName("quote_currency").HasMaxLength(10);
             entity.Property(e => e.MarketCap).HasColumnName("market_cap").HasPrecision(19, 2);
             entity.Property(e => e.PeRatio).HasColumnName("pe_ratio").HasPrecision(8, 4);
@@ -123,6 +153,11 @@ public sealed class IpmsDbContext(DbContextOptions<IpmsDbContext> options) : DbC
             entity.HasOne(e => e.Exchange)
                 .WithMany(e => e.Stocks)
                 .HasForeignKey(e => e.ExchangeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.Industry)
+                .WithMany(e => e.Stocks)
+                .HasForeignKey(e => e.IndustryId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
@@ -192,10 +227,6 @@ public sealed class IpmsDbContext(DbContextOptions<IpmsDbContext> options) : DbC
                 .IsRequired();
             entity.Property(e => e.Quantity).HasColumnName("quantity").HasPrecision(18, 8).IsRequired();
             entity.Property(e => e.PricePerUnit).HasColumnName("price_per_unit").HasPrecision(19, 4).IsRequired();
-            entity.Property(e => e.TotalAmount)
-                .HasColumnName("total_amount")
-                .HasPrecision(28, 8)
-                .HasComputedColumnSql("[quantity] * [price_per_unit]", stored: true);
             entity.Property(e => e.TransactionDate).HasColumnName("transaction_date").IsRequired();
             entity.Property(e => e.Fees).HasColumnName("fees").HasPrecision(19, 4).HasDefaultValue(0m);
             entity.Property(e => e.Notes).HasColumnName("notes").HasMaxLength(500);
@@ -259,6 +290,48 @@ public sealed class IpmsDbContext(DbContextOptions<IpmsDbContext> options) : DbC
 
             entity.HasOne(e => e.Instrument)
                 .WithMany(e => e.HistoricalPrices)
+                .HasForeignKey(e => e.InstrumentId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<IntradayPrice>(entity =>
+        {
+            entity.ToTable("INTRADAY_PRICES");
+            entity.HasKey(e => e.IntradayPriceId);
+
+            entity.Property(e => e.IntradayPriceId).HasColumnName("intraday_price_id");
+            entity.Property(e => e.InstrumentId).HasColumnName("instrument_id");
+            entity.Property(e => e.PriceTimeUtc).HasColumnName("price_time_utc").HasColumnType("datetime2(0)");
+            entity.Property(e => e.OpenPrice).HasColumnName("open_price").HasPrecision(19, 4).IsRequired();
+            entity.Property(e => e.HighPrice).HasColumnName("high_price").HasPrecision(19, 4).IsRequired();
+            entity.Property(e => e.LowPrice).HasColumnName("low_price").HasPrecision(19, 4).IsRequired();
+            entity.Property(e => e.ClosePrice).HasColumnName("close_price").HasPrecision(19, 4).IsRequired();
+            entity.Property(e => e.Volume).HasColumnName("volume");
+
+            entity.HasIndex(e => new { e.InstrumentId, e.PriceTimeUtc }).IsUnique();
+
+            entity.HasOne(e => e.Instrument)
+                .WithMany(e => e.IntradayPrices)
+                .HasForeignKey(e => e.InstrumentId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<RealtimePriceSnapshot>(entity =>
+        {
+            entity.ToTable("REALTIME_PRICE_SNAPSHOTS");
+            entity.HasKey(e => e.RealtimePriceSnapshotId);
+
+            entity.Property(e => e.RealtimePriceSnapshotId).HasColumnName("realtime_price_snapshot_id");
+            entity.Property(e => e.InstrumentId).HasColumnName("instrument_id");
+            entity.Property(e => e.SnapshotTimeUtc).HasColumnName("snapshot_time_utc").HasColumnType("datetime2(0)");
+            entity.Property(e => e.SourceTimeUtc).HasColumnName("source_time_utc").HasColumnType("datetime2(0)");
+            entity.Property(e => e.Price).HasColumnName("price").HasPrecision(19, 4).IsRequired();
+            entity.Property(e => e.Volume).HasColumnName("volume");
+
+            entity.HasIndex(e => new { e.InstrumentId, e.SnapshotTimeUtc }).IsUnique();
+
+            entity.HasOne(e => e.Instrument)
+                .WithMany(e => e.RealtimePriceSnapshots)
                 .HasForeignKey(e => e.InstrumentId)
                 .OnDelete(DeleteBehavior.Cascade);
         });

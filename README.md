@@ -44,7 +44,11 @@ The initializer creates sample:
 
 ## Schema Notes
 
-The instrument model now stores price currency explicitly instead of inferring it only from the exchange:
+The schema is now closer to strict 3NF while keeping the system practical for portfolio analytics.
+
+### Currency and Asset Normalization
+
+The instrument model stores price currency explicitly instead of inferring it only from the exchange:
 
 - `STOCKS.quote_currency`
 - `ETFS.quote_currency`
@@ -63,7 +67,35 @@ Examples:
 - `0700.HK` -> `quote_currency = HKD`
 - `NVDA` -> `quote_currency = USD`
 
-`TRANSACTIONS.total_amount` remains a SQL Server stored computed column (`quantity * price_per_unit`). It is logically derived, but SQL Server manages it automatically so it cannot become inconsistent.
+### Stock Classification Normalization
+
+Stock classification is normalized into reference tables:
+
+- `SECTORS(sector_id, sector_name)`
+- `INDUSTRIES(industry_id, industry_name, sector_id)`
+- `STOCKS.industry_id`
+
+This removes the old free-text `STOCKS.sector` and `STOCKS.industry` columns and avoids the transitive dependency problem where industry determines sector.
+
+Examples:
+
+- `AAPL` -> `Consumer Electronics` -> `Technology`
+- `MSFT` -> `Software Infrastructure` -> `Technology`
+- `0700.HK` -> `Internet Content & Information` -> `Communication Services`
+
+### Transaction Normalization
+
+`TRANSACTIONS.total_amount` has been removed from the table for a stricter textbook 3NF design.
+
+- The database stores only `quantity` and `price_per_unit`
+- API responses still return `totalAmount`
+- `totalAmount` is now calculated in code as `quantity * price_per_unit`
+
+This keeps the external API convenient without storing redundant transaction values in SQL Server.
+
+### Remaining Pragmatic Denormalization
+
+`PORTFOLIO_HOLDINGS.average_cost` is still stored as summary data. It is derivable from transaction history, but it is intentionally kept to make holdings, P/L, and dashboard queries much faster.
 
 ## Authentication
 
@@ -189,3 +221,13 @@ Demo inspection queries are in [stockcircle-demo-queries.sql](/C:/Users/LENOVO/O
 - `GET /api/analytics/portfolios/{portfolioId}/profit-loss`
 - `GET /api/analytics/portfolios/{portfolioId}/sector-exposure`
 - `GET /api/analytics/instruments/{instrumentId}/historical-performance`
+
+## System Advantages
+
+- Clear normalized core data model: users, portfolios, instruments, exchanges, sectors, industries, prices, and transactions are separated cleanly for easier maintenance.
+- Better data quality: quote currencies and crypto base assets are stored explicitly, which avoids ambiguous names and fragile inference rules.
+- Strong analytics support: holdings, allocation, profit/loss, sector exposure, and historical performance can be queried directly from the backend.
+- Real market-data integration: Yahoo Finance import updates current prices and historical prices for stocks, ETFs, HK equities, and crypto.
+- Scales well for demos and coursework: the project already supports seeded users, bulk demo users, market-universe imports, and large portfolio datasets in SQL Server.
+- API-friendly design: the database stays normalized while the API still returns convenient computed values such as transaction totals and portfolio analytics.
+- Easy local deployment: the system auto-creates the SQL Server database, seeds reference data, and runs locally on `localhost\\SQLEXPRESS`.

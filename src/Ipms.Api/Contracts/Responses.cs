@@ -140,6 +140,28 @@ public sealed record HistoricalPerformanceResponse(
     decimal MonthlyHigh,
     decimal MonthlyLow);
 
+public sealed record IntradayReturnResponse(
+    int InstrumentId,
+    DateTime PriceTimeUtc,
+    decimal OpenPrice,
+    decimal HighPrice,
+    decimal LowPrice,
+    decimal ClosePrice,
+    long? Volume,
+    decimal? PreviousClose,
+    decimal? PriceChange,
+    decimal? PercentageChange);
+
+public sealed record RealtimeReturnResponse(
+    int InstrumentId,
+    DateTime SnapshotTimeUtc,
+    DateTime? SourceTimeUtc,
+    decimal Price,
+    long? Volume,
+    decimal? PreviousClose,
+    decimal? PriceChange,
+    decimal? PercentageChange);
+
 public sealed record MarketDataImportResponse(
     int InstrumentId,
     string TickerSymbol,
@@ -149,6 +171,12 @@ public sealed record MarketDataImportResponse(
     int InsertedPricePoints,
     int UpdatedPricePoints,
     int ProcessedPricePoints,
+    int InsertedIntradayPoints,
+    int UpdatedIntradayPoints,
+    int ProcessedIntradayPoints,
+    int InsertedRealtimeSnapshots,
+    int UpdatedRealtimeSnapshots,
+    int ProcessedRealtimeSnapshots,
     bool CreatedInstrument,
     DateTime ImportedAtUtc,
     string Source);

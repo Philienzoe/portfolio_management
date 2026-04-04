@@ -213,7 +213,7 @@ public static class PortfolioEndpoints
                 transaction.TransactionType,
                 transaction.Quantity,
                 transaction.PricePerUnit,
-                transaction.TotalAmount,
+                transaction.Quantity * transaction.PricePerUnit,
                 transaction.TransactionDate,
                 transaction.Fees,
                 transaction.Notes))

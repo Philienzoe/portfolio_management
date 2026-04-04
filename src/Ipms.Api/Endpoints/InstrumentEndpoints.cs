@@ -107,6 +107,15 @@ public static class InstrumentEndpoints
 
         var stockQuoteCurrency = NormalizeQuoteCurrency(request.QuoteCurrency) ??
             await ResolveQuoteCurrencyFromExchangeAsync(db, request.ExchangeId, cancellationToken);
+        int? industryId;
+        try
+        {
+            industryId = await ResolveIndustryIdAsync(db, request.Sector, request.Industry, cancellationToken);
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Results.BadRequest(new { message = exception.Message });
+        }
 
         var instrument = new FinancialInstrument
         {
@@ -117,8 +126,7 @@ public static class InstrumentEndpoints
             LastUpdated = DateTime.UtcNow,
             Stock = new Stock
             {
-                Sector = request.Sector?.Trim(),
-                Industry = request.Industry?.Trim(),
+                IndustryId = industryId,
                 QuoteCurrency = stockQuoteCurrency,
                 MarketCap = request.MarketCap,
                 PeRatio = request.PeRatio,
@@ -282,6 +290,9 @@ public static class InstrumentEndpoints
     private static IQueryable<FinancialInstrument> IncludeInstrumentGraph(IQueryable<FinancialInstrument> query) =>
         query
             .Include(instrument => instrument.Stock)
+                .ThenInclude(stock => stock!.Industry)
+                    .ThenInclude(industry => industry!.Sector)
+            .Include(instrument => instrument.Stock)
                 .ThenInclude(stock => stock!.Exchange)
             .Include(instrument => instrument.Etf)
                 .ThenInclude(etf => etf!.Exchange)
@@ -322,6 +333,72 @@ public static class InstrumentEndpoints
             "XNAS" or "XNYS" => "USD",
             _ => null
         };
+
+    private static async Task<int?> ResolveIndustryIdAsync(
+        IpmsDbContext db,
+        string? sectorName,
+        string? industryName,
+        CancellationToken cancellationToken)
+    {
+        var normalizedIndustry = NormalizeReferenceName(industryName);
+        var normalizedSector = NormalizeReferenceName(sectorName);
+
+        if (normalizedIndustry is null && normalizedSector is null)
+        {
+            return null;
+        }
+
+        var resolvedSectorName = normalizedSector ?? "Unclassified";
+        var resolvedIndustryName = normalizedIndustry ?? $"{resolvedSectorName} General";
+
+        var existingIndustry = await db.Industries
+            .SingleOrDefaultAsync(industry => industry.IndustryName == resolvedIndustryName, cancellationToken);
+
+        if (existingIndustry is not null)
+        {
+            if (normalizedSector is not null)
+            {
+                var currentSectorName = await db.Sectors
+                    .Where(sector => sector.SectorId == existingIndustry.SectorId)
+                    .Select(sector => sector.SectorName)
+                    .SingleAsync(cancellationToken);
+
+                if (!string.Equals(currentSectorName, resolvedSectorName, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException(
+                        $"Industry '{resolvedIndustryName}' already exists under sector '{currentSectorName}'.");
+                }
+            }
+
+            return existingIndustry.IndustryId;
+        }
+
+        var sector = await db.Sectors
+            .SingleOrDefaultAsync(item => item.SectorName == resolvedSectorName, cancellationToken);
+
+        if (sector is null)
+        {
+            sector = new Sector
+            {
+                SectorName = resolvedSectorName
+            };
+            db.Sectors.Add(sector);
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        var industry = new Industry
+        {
+            IndustryName = resolvedIndustryName,
+            SectorId = sector.SectorId
+        };
+
+        db.Industries.Add(industry);
+        await db.SaveChangesAsync(cancellationToken);
+        return industry.IndustryId;
+    }
+
+    private static string? NormalizeReferenceName(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
     private static (string BaseAssetSymbol, string? QuoteCurrency) ParseCryptoPair(string ticker)
     {

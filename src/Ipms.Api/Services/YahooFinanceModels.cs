@@ -32,6 +32,7 @@ public sealed class YahooFinanceMeta
     public string? FullExchangeName { get; init; }
     public string? InstrumentType { get; init; }
     public decimal? RegularMarketPrice { get; init; }
+    public long? RegularMarketTime { get; init; }
     public string? LongName { get; init; }
     public string? ShortName { get; init; }
     public string? Timezone { get; init; }

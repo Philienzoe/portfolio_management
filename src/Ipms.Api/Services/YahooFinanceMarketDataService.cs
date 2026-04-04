@@ -18,6 +18,9 @@ public sealed class YahooFinanceMarketDataService(
     private readonly MarketDataOptions _options = options.Value;
     private readonly ILogger<YahooFinanceMarketDataService> _logger = logger;
 
+    private readonly record struct IntradayUpsertSummary(int Inserted, int Updated, int Processed);
+    private readonly record struct RealtimeUpsertSummary(int Inserted, int Updated, int Processed);
+
     public async Task<MarketDataImportResult> ImportByTickerAsync(
         MarketDataImportCommand command,
         CancellationToken cancellationToken = default)
@@ -113,7 +116,10 @@ public sealed class YahooFinanceMarketDataService(
         bool createIfMissing,
         CancellationToken cancellationToken)
     {
-        var chartResult = await FetchChartAsync(ticker, range, interval, cancellationToken);
+        var resolvedRange = ResolveRange(range);
+        var resolvedInterval = ResolveInterval(interval);
+
+        var chartResult = await FetchChartAsync(ticker, resolvedRange, resolvedInterval, cancellationToken);
         if (chartResult.ErrorMessage is not null)
         {
             return FailedImport(ticker, chartResult.ErrorMessage);
@@ -188,6 +194,22 @@ public sealed class YahooFinanceMarketDataService(
         instrument.LastUpdated = DateTime.UtcNow;
         ApplyBestEffortMetadata(instrument, meta);
 
+        var intradaySummary = await UpsertIntradayPricesAsync(
+            instrument.InstrumentId,
+            instrument.CurrentPrice,
+            timestamps,
+            quote,
+            resolvedInterval,
+            meta.RegularMarketTime,
+            cancellationToken);
+
+        var realtimeSummary = await UpsertRealtimeSnapshotsAsync(
+            instrument.InstrumentId,
+            instrument.CurrentPrice,
+            quote,
+            meta.RegularMarketTime,
+            cancellationToken);
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return new MarketDataImportResult(
@@ -200,6 +222,12 @@ public sealed class YahooFinanceMarketDataService(
             inserted,
             updated,
             processed,
+            intradaySummary.Inserted,
+            intradaySummary.Updated,
+            intradaySummary.Processed,
+            realtimeSummary.Inserted,
+            realtimeSummary.Updated,
+            realtimeSummary.Processed,
             createdInstrument,
             DateTime.UtcNow,
             null);
@@ -211,9 +239,7 @@ public sealed class YahooFinanceMarketDataService(
         string interval,
         CancellationToken cancellationToken)
     {
-        var resolvedRange = string.IsNullOrWhiteSpace(range) ? _options.DefaultRange : range.Trim();
-        var resolvedInterval = string.IsNullOrWhiteSpace(interval) ? _options.DefaultInterval : interval.Trim();
-        var url = $"v8/finance/chart/{Uri.EscapeDataString(ticker)}?range={Uri.EscapeDataString(resolvedRange)}&interval={Uri.EscapeDataString(resolvedInterval)}&includeAdjustedClose=true";
+        var url = $"v8/finance/chart/{Uri.EscapeDataString(ticker)}?range={Uri.EscapeDataString(range)}&interval={Uri.EscapeDataString(interval)}&includeAdjustedClose=true";
 
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
         request.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
@@ -286,11 +312,6 @@ public sealed class YahooFinanceMarketDataService(
 
     private void ApplyBestEffortMetadata(FinancialInstrument instrument, YahooFinanceMeta meta)
     {
-        if (instrument.Stock is not null && string.IsNullOrWhiteSpace(instrument.Stock.Industry))
-        {
-            instrument.Stock.Industry = meta.FullExchangeName;
-        }
-
         if (instrument.Stock is not null && string.IsNullOrWhiteSpace(instrument.Stock.QuoteCurrency))
         {
             instrument.Stock.QuoteCurrency = NormalizeQuoteCurrency(meta.Currency);
@@ -356,6 +377,102 @@ public sealed class YahooFinanceMarketDataService(
             .Select(item => (int?)item.ExchangeId)
             .SingleOrDefaultAsync(cancellationToken);
 
+    private async Task<IntradayUpsertSummary> UpsertIntradayPricesAsync(
+        int instrumentId,
+        decimal? currentPrice,
+        IReadOnlyList<long> timestamps,
+        YahooFinanceQuote quote,
+        string interval,
+        long? regularMarketTime,
+        CancellationToken cancellationToken)
+    {
+        var points = new Dictionary<DateTime, IntradayPrice>();
+
+        if (IsIntradayInterval(interval))
+        {
+            for (var index = 0; index < timestamps.Count; index++)
+            {
+                var point = TryBuildIntradayPoint(instrumentId, timestamps[index], quote, index);
+                if (point is null)
+                {
+                    continue;
+                }
+
+                points[point.PriceTimeUtc] = point;
+            }
+        }
+
+        var currentSnapshot = BuildCurrentIntradaySnapshot(instrumentId, currentPrice, quote, regularMarketTime);
+        if (currentSnapshot is not null)
+        {
+            points[currentSnapshot.PriceTimeUtc] = currentSnapshot;
+        }
+
+        if (points.Count == 0)
+        {
+            return new IntradayUpsertSummary(0, 0, 0);
+        }
+
+        var minTime = points.Keys.Min();
+        var maxTime = points.Keys.Max();
+        var existingPoints = await _dbContext.IntradayPrices
+            .Where(item => item.InstrumentId == instrumentId && item.PriceTimeUtc >= minTime && item.PriceTimeUtc <= maxTime)
+            .ToDictionaryAsync(item => item.PriceTimeUtc, cancellationToken);
+
+        var inserted = 0;
+        var updated = 0;
+
+        foreach (var point in points.Values.OrderBy(item => item.PriceTimeUtc))
+        {
+            if (existingPoints.TryGetValue(point.PriceTimeUtc, out var existing))
+            {
+                existing.OpenPrice = point.OpenPrice;
+                existing.HighPrice = point.HighPrice;
+                existing.LowPrice = point.LowPrice;
+                existing.ClosePrice = point.ClosePrice;
+                existing.Volume = point.Volume;
+                updated++;
+                continue;
+            }
+
+            _dbContext.IntradayPrices.Add(point);
+            existingPoints[point.PriceTimeUtc] = point;
+            inserted++;
+        }
+
+        return new IntradayUpsertSummary(inserted, updated, points.Count);
+    }
+
+    private async Task<RealtimeUpsertSummary> UpsertRealtimeSnapshotsAsync(
+        int instrumentId,
+        decimal? currentPrice,
+        YahooFinanceQuote quote,
+        long? regularMarketTime,
+        CancellationToken cancellationToken)
+    {
+        var snapshot = BuildRealtimeSnapshot(instrumentId, currentPrice, quote, regularMarketTime);
+        if (snapshot is null)
+        {
+            return new RealtimeUpsertSummary(0, 0, 0);
+        }
+
+        var existing = await _dbContext.RealtimePriceSnapshots
+            .SingleOrDefaultAsync(
+                item => item.InstrumentId == instrumentId && item.SnapshotTimeUtc == snapshot.SnapshotTimeUtc,
+                cancellationToken);
+
+        if (existing is not null)
+        {
+            existing.SourceTimeUtc = snapshot.SourceTimeUtc;
+            existing.Price = snapshot.Price;
+            existing.Volume = snapshot.Volume;
+            return new RealtimeUpsertSummary(0, 1, 1);
+        }
+
+        _dbContext.RealtimePriceSnapshots.Add(snapshot);
+        return new RealtimeUpsertSummary(1, 0, 1);
+    }
+
     private static HistoricalPrice? TryBuildPricePoint(
         int instrumentId,
         long timestamp,
@@ -387,6 +504,114 @@ public sealed class YahooFinanceMarketDataService(
 
     private static decimal? GetValue(decimal?[]? values, int index) =>
         values is null || index >= values.Length ? null : values[index];
+
+    private static IntradayPrice? TryBuildIntradayPoint(
+        int instrumentId,
+        long timestamp,
+        YahooFinanceQuote quote,
+        int index)
+    {
+        var open = GetValue(quote.Open, index);
+        var high = GetValue(quote.High, index);
+        var low = GetValue(quote.Low, index);
+        var close = GetValue(quote.Close, index);
+        if (open is null || high is null || low is null || close is null)
+        {
+            return null;
+        }
+
+        return new IntradayPrice
+        {
+            InstrumentId = instrumentId,
+            PriceTimeUtc = NormalizeIntradayTime(DateTimeOffset.FromUnixTimeSeconds(timestamp).UtcDateTime),
+            OpenPrice = open.Value,
+            HighPrice = high.Value,
+            LowPrice = low.Value,
+            ClosePrice = close.Value,
+            Volume = GetValue(quote.Volume, index)
+        };
+    }
+
+    private static IntradayPrice? BuildCurrentIntradaySnapshot(
+        int instrumentId,
+        decimal? currentPrice,
+        YahooFinanceQuote quote,
+        long? regularMarketTime)
+    {
+        if (currentPrice is null)
+        {
+            return null;
+        }
+
+        var snapshotTimeUtc = regularMarketTime is long marketTime
+            ? NormalizeIntradayTime(DateTimeOffset.FromUnixTimeSeconds(marketTime).UtcDateTime)
+            : NormalizeIntradayTime(DateTime.UtcNow);
+
+        return new IntradayPrice
+        {
+            InstrumentId = instrumentId,
+            PriceTimeUtc = snapshotTimeUtc,
+            OpenPrice = currentPrice.Value,
+            HighPrice = currentPrice.Value,
+            LowPrice = currentPrice.Value,
+            ClosePrice = currentPrice.Value,
+            Volume = quote.Volume?.LastOrDefault(value => value is not null)
+        };
+    }
+
+    private static RealtimePriceSnapshot? BuildRealtimeSnapshot(
+        int instrumentId,
+        decimal? currentPrice,
+        YahooFinanceQuote quote,
+        long? regularMarketTime)
+    {
+        if (currentPrice is null)
+        {
+            return null;
+        }
+
+        var sourceTimeUtc = regularMarketTime is long marketTime
+            ? DateTimeOffset.FromUnixTimeSeconds(marketTime).UtcDateTime
+            : (DateTime?)null;
+
+        return new RealtimePriceSnapshot
+        {
+            InstrumentId = instrumentId,
+            SnapshotTimeUtc = NormalizeRealtimeTime(sourceTimeUtc ?? DateTime.UtcNow),
+            SourceTimeUtc = sourceTimeUtc,
+            Price = currentPrice.Value,
+            Volume = quote.Volume?.LastOrDefault(value => value is not null)
+        };
+    }
+
+    private static DateTime NormalizeIntradayTime(DateTime utcDateTime) =>
+        new(
+            utcDateTime.Year,
+            utcDateTime.Month,
+            utcDateTime.Day,
+            utcDateTime.Hour,
+            utcDateTime.Minute,
+            0,
+            DateTimeKind.Utc);
+
+    private static DateTime NormalizeRealtimeTime(DateTime utcDateTime) =>
+        new(
+            utcDateTime.Year,
+            utcDateTime.Month,
+            utcDateTime.Day,
+            utcDateTime.Hour,
+            utcDateTime.Minute,
+            utcDateTime.Second,
+            DateTimeKind.Utc);
+
+    private string ResolveRange(string range) =>
+        string.IsNullOrWhiteSpace(range) ? _options.DefaultRange : range.Trim();
+
+    private string ResolveInterval(string interval) =>
+        string.IsNullOrWhiteSpace(interval) ? _options.DefaultInterval : interval.Trim();
+
+    private static bool IsIntradayInterval(string interval) =>
+        interval.EndsWith("m", StringComparison.OrdinalIgnoreCase);
 
     private static long? GetValue(long?[]? values, int index) =>
         values is null || index >= values.Length ? null : values[index];
@@ -453,6 +678,12 @@ public sealed class YahooFinanceMarketDataService(
             null,
             null,
             null,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
             0,
             0,
             0,

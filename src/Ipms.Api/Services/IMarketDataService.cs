@@ -21,6 +21,12 @@ public sealed record MarketDataImportResult(
     int InsertedPricePoints,
     int UpdatedPricePoints,
     int ProcessedPricePoints,
+    int InsertedIntradayPoints,
+    int UpdatedIntradayPoints,
+    int ProcessedIntradayPoints,
+    int InsertedRealtimeSnapshots,
+    int UpdatedRealtimeSnapshots,
+    int ProcessedRealtimeSnapshots,
     bool CreatedInstrument,
     DateTime ImportedAtUtc,
     string? ErrorMessage);

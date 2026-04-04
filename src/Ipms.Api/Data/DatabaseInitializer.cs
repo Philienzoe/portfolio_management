@@ -64,10 +64,15 @@ END
 
     private async Task EnsureSchemaUpdatesAsync(CancellationToken cancellationToken)
     {
-        const string addColumnsCommand = """
+        const string ensureSchemaObjectsCommand = """
 IF COL_LENGTH('STOCKS', 'quote_currency') IS NULL
 BEGIN
     ALTER TABLE STOCKS ADD quote_currency NVARCHAR(10) NULL;
+END;
+
+IF COL_LENGTH('STOCKS', 'industry_id') IS NULL
+BEGIN
+    ALTER TABLE STOCKS ADD industry_id INT NULL;
 END;
 
 IF COL_LENGTH('ETFS', 'quote_currency') IS NULL
@@ -83,6 +88,53 @@ END;
 IF COL_LENGTH('CRYPTOCURRENCIES', 'quote_currency') IS NULL
 BEGIN
     ALTER TABLE CRYPTOCURRENCIES ADD quote_currency NVARCHAR(10) NULL;
+END;
+
+IF OBJECT_ID('SECTORS', 'U') IS NULL
+BEGIN
+    CREATE TABLE SECTORS
+    (
+        sector_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        sector_name NVARCHAR(100) NOT NULL
+    );
+END;
+
+IF OBJECT_ID('INDUSTRIES', 'U') IS NULL
+BEGIN
+    CREATE TABLE INDUSTRIES
+    (
+        industry_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        industry_name NVARCHAR(100) NOT NULL,
+        sector_id INT NOT NULL
+    );
+END;
+
+IF OBJECT_ID('INTRADAY_PRICES', 'U') IS NULL
+BEGIN
+    CREATE TABLE INTRADAY_PRICES
+    (
+        intraday_price_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        instrument_id INT NOT NULL,
+        price_time_utc DATETIME2(0) NOT NULL,
+        open_price DECIMAL(19,4) NOT NULL,
+        high_price DECIMAL(19,4) NOT NULL,
+        low_price DECIMAL(19,4) NOT NULL,
+        close_price DECIMAL(19,4) NOT NULL,
+        volume BIGINT NULL
+    );
+END;
+
+IF OBJECT_ID('REALTIME_PRICE_SNAPSHOTS', 'U') IS NULL
+BEGIN
+    CREATE TABLE REALTIME_PRICE_SNAPSHOTS
+    (
+        realtime_price_snapshot_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        instrument_id INT NOT NULL,
+        snapshot_time_utc DATETIME2(0) NOT NULL,
+        source_time_utc DATETIME2(0) NULL,
+        price DECIMAL(19,4) NOT NULL,
+        volume BIGINT NULL
+    );
 END;
 """;
 
@@ -116,7 +168,261 @@ LEFT JOIN STOCK_EXCHANGES sx
 WHERE e.quote_currency IS NULL;
 """;
 
-        const string backfillCommand = """
+        const string ensureReferenceConstraintsCommand = """
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = 'UX_SECTORS_sector_name'
+      AND object_id = OBJECT_ID('SECTORS'))
+BEGIN
+    CREATE UNIQUE INDEX UX_SECTORS_sector_name
+        ON SECTORS(sector_name);
+END;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = 'UX_INDUSTRIES_industry_name'
+      AND object_id = OBJECT_ID('INDUSTRIES'))
+BEGIN
+    CREATE UNIQUE INDEX UX_INDUSTRIES_industry_name
+        ON INDUSTRIES(industry_name);
+END;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = 'IX_STOCKS_industry_id'
+      AND object_id = OBJECT_ID('STOCKS'))
+BEGIN
+    CREATE INDEX IX_STOCKS_industry_id
+        ON STOCKS(industry_id);
+END;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.foreign_keys
+    WHERE name = 'FK_INDUSTRIES_SECTORS')
+BEGIN
+    ALTER TABLE INDUSTRIES
+        ADD CONSTRAINT FK_INDUSTRIES_SECTORS
+        FOREIGN KEY (sector_id) REFERENCES SECTORS(sector_id);
+END;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.foreign_keys
+    WHERE name = 'FK_STOCKS_INDUSTRIES')
+BEGIN
+    ALTER TABLE STOCKS
+        ADD CONSTRAINT FK_STOCKS_INDUSTRIES
+        FOREIGN KEY (industry_id) REFERENCES INDUSTRIES(industry_id);
+END;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = 'UX_INTRADAY_PRICES_instrument_time'
+      AND object_id = OBJECT_ID('INTRADAY_PRICES'))
+BEGIN
+    CREATE UNIQUE INDEX UX_INTRADAY_PRICES_instrument_time
+        ON INTRADAY_PRICES(instrument_id, price_time_utc);
+END;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.foreign_keys
+    WHERE name = 'FK_INTRADAY_PRICES_FINANCIAL_INSTRUMENTS')
+BEGIN
+    ALTER TABLE INTRADAY_PRICES
+        ADD CONSTRAINT FK_INTRADAY_PRICES_FINANCIAL_INSTRUMENTS
+        FOREIGN KEY (instrument_id) REFERENCES FINANCIAL_INSTRUMENTS(instrument_id);
+END;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = 'UX_REALTIME_PRICE_SNAPSHOTS_instrument_time'
+      AND object_id = OBJECT_ID('REALTIME_PRICE_SNAPSHOTS'))
+BEGIN
+    CREATE UNIQUE INDEX UX_REALTIME_PRICE_SNAPSHOTS_instrument_time
+        ON REALTIME_PRICE_SNAPSHOTS(instrument_id, snapshot_time_utc);
+END;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.foreign_keys
+    WHERE name = 'FK_REALTIME_PRICE_SNAPSHOTS_FINANCIAL_INSTRUMENTS')
+BEGIN
+    ALTER TABLE REALTIME_PRICE_SNAPSHOTS
+        ADD CONSTRAINT FK_REALTIME_PRICE_SNAPSHOTS_FINANCIAL_INSTRUMENTS
+        FOREIGN KEY (instrument_id) REFERENCES FINANCIAL_INSTRUMENTS(instrument_id);
+END;
+""";
+
+        const string backfillStockClassificationCommand = """
+IF NOT EXISTS (SELECT 1 FROM SECTORS WHERE sector_name = 'Unclassified')
+BEGIN
+    INSERT INTO SECTORS (sector_name) VALUES ('Unclassified');
+END;
+
+IF COL_LENGTH('STOCKS', 'sector') IS NOT NULL OR COL_LENGTH('STOCKS', 'industry') IS NOT NULL
+BEGIN
+    DECLARE @sql NVARCHAR(MAX) = N'
+    ;WITH LegacyClassification AS
+    (
+        SELECT
+            instrument_id,
+            NULLIF(LTRIM(RTRIM([sector])), '''') AS raw_sector,
+            NULLIF(LTRIM(RTRIM([industry])), '''') AS raw_industry
+        FROM STOCKS
+    ),
+    CleanedClassification AS
+    (
+        SELECT
+            instrument_id,
+            CASE
+                WHEN raw_sector IS NOT NULL
+                 AND UPPER(raw_sector) IN (''NYSE'', ''NYSE AMERICAN'', ''NYSEARCA'', ''NYSE ARCA'', ''NASDAQ'', ''NASDAQGS'', ''NASDAQGM'', ''NASDAQCM'', ''HKSE'', ''HKEX'', ''CBOE US'', ''NEW YORK STOCK EXCHANGE'', ''HONG KONG STOCK EXCHANGE'')
+                    THEN NULL
+                ELSE raw_sector
+            END AS sector_name,
+            CASE
+                WHEN raw_industry IS NOT NULL
+                 AND UPPER(raw_industry) IN (''NYSE'', ''NYSE AMERICAN'', ''NYSEARCA'', ''NYSE ARCA'', ''NASDAQ'', ''NASDAQGS'', ''NASDAQGM'', ''NASDAQCM'', ''HKSE'', ''HKEX'', ''CBOE US'', ''NEW YORK STOCK EXCHANGE'', ''HONG KONG STOCK EXCHANGE'')
+                    THEN NULL
+                ELSE raw_industry
+            END AS industry_name
+        FROM LegacyClassification
+    ),
+    SourceSectors AS
+    (
+        SELECT DISTINCT
+            COALESCE(sector_name, ''Unclassified'') AS sector_name
+        FROM CleanedClassification
+        WHERE sector_name IS NOT NULL
+           OR industry_name IS NOT NULL
+    )
+    INSERT INTO SECTORS (sector_name)
+    SELECT source.sector_name
+    FROM SourceSectors source
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM SECTORS target
+        WHERE target.sector_name = source.sector_name);
+
+    ;WITH SourceIndustries AS
+    (
+        SELECT DISTINCT
+            COALESCE(
+                industry_name,
+                CASE
+                    WHEN sector_name IS NOT NULL THEN CONCAT(sector_name, '' General'')
+                    ELSE NULL
+                END) AS industry_name,
+            COALESCE(sector_name, ''Unclassified'') AS sector_name
+        FROM CleanedClassification
+        WHERE industry_name IS NOT NULL
+           OR sector_name IS NOT NULL
+    )
+    INSERT INTO INDUSTRIES (industry_name, sector_id)
+    SELECT source.industry_name, sector.sector_id
+    FROM SourceIndustries source
+    JOIN SECTORS sector
+        ON sector.sector_name = source.sector_name
+    WHERE source.industry_name IS NOT NULL
+      AND NOT EXISTS (
+        SELECT 1
+        FROM INDUSTRIES target
+        WHERE target.industry_name = source.industry_name);
+
+    ;WITH CleanedClassification AS
+    (
+        SELECT
+            instrument_id,
+            CASE
+                WHEN NULLIF(LTRIM(RTRIM([sector])), '''') IS NOT NULL
+                 AND UPPER(NULLIF(LTRIM(RTRIM([sector])), '''')) IN (''NYSE'', ''NYSE AMERICAN'', ''NYSEARCA'', ''NYSE ARCA'', ''NASDAQ'', ''NASDAQGS'', ''NASDAQGM'', ''NASDAQCM'', ''HKSE'', ''HKEX'', ''CBOE US'', ''NEW YORK STOCK EXCHANGE'', ''HONG KONG STOCK EXCHANGE'')
+                    THEN NULL
+                ELSE NULLIF(LTRIM(RTRIM([sector])), '''')
+            END AS sector_name,
+            CASE
+                WHEN NULLIF(LTRIM(RTRIM([industry])), '''') IS NOT NULL
+                 AND UPPER(NULLIF(LTRIM(RTRIM([industry])), '''')) IN (''NYSE'', ''NYSE AMERICAN'', ''NYSEARCA'', ''NYSE ARCA'', ''NASDAQ'', ''NASDAQGS'', ''NASDAQGM'', ''NASDAQCM'', ''HKSE'', ''HKEX'', ''CBOE US'', ''NEW YORK STOCK EXCHANGE'', ''HONG KONG STOCK EXCHANGE'')
+                    THEN NULL
+                ELSE NULLIF(LTRIM(RTRIM([industry])), '''')
+            END AS industry_name
+        FROM STOCKS
+    )
+    UPDATE stock
+    SET stock.industry_id = industry.industry_id
+    FROM STOCKS stock
+    JOIN CleanedClassification classification
+        ON classification.instrument_id = stock.instrument_id
+    JOIN INDUSTRIES industry
+        ON industry.industry_name = COALESCE(
+            classification.industry_name,
+            CASE
+                WHEN classification.sector_name IS NOT NULL THEN CONCAT(classification.sector_name, '' General'')
+                ELSE NULL
+            END)
+    WHERE stock.industry_id IS NULL
+      AND (
+          classification.industry_name IS NOT NULL
+          OR classification.sector_name IS NOT NULL);';
+
+    EXEC sp_executesql @sql;
+END;
+""";
+
+        const string cleanInvalidStockClassificationCommand = """
+;WITH InvalidIndustries AS
+(
+    SELECT industry_id
+    FROM INDUSTRIES
+    WHERE UPPER(LTRIM(RTRIM(industry_name))) IN (
+        'NYSE',
+        'NYSE AMERICAN',
+        'NYSEARCA',
+        'NYSE ARCA',
+        'NASDAQ',
+        'NASDAQGS',
+        'NASDAQGM',
+        'NASDAQCM',
+        'HKSE',
+        'HKEX',
+        'CBOE US',
+        'NEW YORK STOCK EXCHANGE',
+        'HONG KONG STOCK EXCHANGE')
+)
+UPDATE stock
+SET stock.industry_id = NULL
+FROM STOCKS stock
+JOIN InvalidIndustries invalidIndustry
+    ON invalidIndustry.industry_id = stock.industry_id;
+
+DELETE industry
+FROM INDUSTRIES industry
+LEFT JOIN STOCKS stock
+    ON stock.industry_id = industry.industry_id
+WHERE stock.instrument_id IS NULL
+  AND UPPER(LTRIM(RTRIM(industry.industry_name))) IN (
+        'NYSE',
+        'NYSE AMERICAN',
+        'NYSEARCA',
+        'NYSE ARCA',
+        'NASDAQ',
+        'NASDAQGS',
+        'NASDAQGM',
+        'NASDAQCM',
+        'HKSE',
+        'HKEX',
+        'CBOE US',
+        'NEW YORK STOCK EXCHANGE',
+        'HONG KONG STOCK EXCHANGE');
+""";
+
+        const string backfillCryptoCommand = """
 UPDATE c
 SET
     base_asset_symbol = CASE
@@ -134,7 +440,7 @@ WHERE c.base_asset_symbol IS NULL
    OR c.quote_currency IS NULL;
 """;
 
-        const string normalizeNamesCommand = """
+        const string normalizeCryptoNamesCommand = """
 UPDATE fi
 SET fi.name = LEFT(fi.name, LEN(fi.name) - LEN(c.quote_currency) - 1)
 FROM FINANCIAL_INSTRUMENTS fi
@@ -145,10 +451,34 @@ WHERE fi.instrument_type = 'CRYPTO'
   AND fi.name LIKE '% ' + c.quote_currency;
 """;
 
-        await _dbContext.Database.ExecuteSqlRawAsync(addColumnsCommand, cancellationToken);
+        const string dropLegacyStockColumnsCommand = """
+IF COL_LENGTH('STOCKS', 'sector') IS NOT NULL
+BEGIN
+    ALTER TABLE STOCKS DROP COLUMN [sector];
+END;
+
+IF COL_LENGTH('STOCKS', 'industry') IS NOT NULL
+BEGIN
+    ALTER TABLE STOCKS DROP COLUMN [industry];
+END;
+""";
+
+        const string dropTransactionTotalAmountCommand = """
+IF COL_LENGTH('TRANSACTIONS', 'total_amount') IS NOT NULL
+BEGIN
+    ALTER TABLE TRANSACTIONS DROP COLUMN [total_amount];
+END;
+""";
+
+        await _dbContext.Database.ExecuteSqlRawAsync(ensureSchemaObjectsCommand, cancellationToken);
         await _dbContext.Database.ExecuteSqlRawAsync(backfillInstrumentCurrenciesCommand, cancellationToken);
-        await _dbContext.Database.ExecuteSqlRawAsync(backfillCommand, cancellationToken);
-        await _dbContext.Database.ExecuteSqlRawAsync(normalizeNamesCommand, cancellationToken);
+        await _dbContext.Database.ExecuteSqlRawAsync(ensureReferenceConstraintsCommand, cancellationToken);
+        await _dbContext.Database.ExecuteSqlRawAsync(backfillStockClassificationCommand, cancellationToken);
+        await _dbContext.Database.ExecuteSqlRawAsync(cleanInvalidStockClassificationCommand, cancellationToken);
+        await _dbContext.Database.ExecuteSqlRawAsync(backfillCryptoCommand, cancellationToken);
+        await _dbContext.Database.ExecuteSqlRawAsync(normalizeCryptoNamesCommand, cancellationToken);
+        await _dbContext.Database.ExecuteSqlRawAsync(dropTransactionTotalAmountCommand, cancellationToken);
+        await _dbContext.Database.ExecuteSqlRawAsync(dropLegacyStockColumnsCommand, cancellationToken);
     }
 
     private async Task SeedReferenceDataAsync(CancellationToken cancellationToken)
@@ -231,6 +561,34 @@ WHERE fi.instrument_type = 'CRYPTO'
             CreatedAt = utcNow.AddMonths(-2)
         };
 
+        var technologySector = new Sector
+        {
+            SectorName = "Technology"
+        };
+
+        var communicationServicesSector = new Sector
+        {
+            SectorName = "Communication Services"
+        };
+
+        var consumerElectronicsIndustry = new Industry
+        {
+            IndustryName = "Consumer Electronics",
+            Sector = technologySector
+        };
+
+        var softwareInfrastructureIndustry = new Industry
+        {
+            IndustryName = "Software Infrastructure",
+            Sector = technologySector
+        };
+
+        var internetContentIndustry = new Industry
+        {
+            IndustryName = "Internet Content & Information",
+            Sector = communicationServicesSector
+        };
+
         var aapl = new FinancialInstrument
         {
             TickerSymbol = "AAPL",
@@ -240,8 +598,7 @@ WHERE fi.instrument_type = 'CRYPTO'
             LastUpdated = utcNow,
             Stock = new Stock
             {
-                Sector = "Technology",
-                Industry = "Consumer Electronics",
+                Industry = consumerElectronicsIndustry,
                 QuoteCurrency = "USD",
                 MarketCap = 2900000000000m,
                 PeRatio = 29.4800m,
@@ -259,8 +616,7 @@ WHERE fi.instrument_type = 'CRYPTO'
             LastUpdated = utcNow,
             Stock = new Stock
             {
-                Sector = "Technology",
-                Industry = "Software Infrastructure",
+                Industry = softwareInfrastructureIndustry,
                 QuoteCurrency = "USD",
                 MarketCap = 3150000000000m,
                 PeRatio = 34.7200m,
@@ -349,8 +705,7 @@ WHERE fi.instrument_type = 'CRYPTO'
             LastUpdated = utcNow,
             Stock = new Stock
             {
-                Sector = "Communication Services",
-                Industry = "Internet Content & Information",
+                Industry = internetContentIndustry,
                 QuoteCurrency = "HKD",
                 MarketCap = 2980000000000m,
                 PeRatio = 18.6500m,

@@ -22,13 +22,14 @@ public sealed class FinancialInstrument
     public List<TransactionRecord> Transactions { get; set; } = [];
     public List<PortfolioHolding> Holdings { get; set; } = [];
     public List<HistoricalPrice> HistoricalPrices { get; set; } = [];
+    public List<IntradayPrice> IntradayPrices { get; set; } = [];
+    public List<RealtimePriceSnapshot> RealtimePriceSnapshots { get; set; } = [];
 }
 
 public sealed class Stock
 {
     public int InstrumentId { get; set; }
-    public string? Sector { get; set; }
-    public string? Industry { get; set; }
+    public int? IndustryId { get; set; }
     public string? QuoteCurrency { get; set; }
     public decimal? MarketCap { get; set; }
     public decimal? PeRatio { get; set; }
@@ -36,6 +37,7 @@ public sealed class Stock
     public int? ExchangeId { get; set; }
 
     public FinancialInstrument Instrument { get; set; } = null!;
+    public Industry? Industry { get; set; }
     public StockExchange? Exchange { get; set; }
 }
 
@@ -64,4 +66,22 @@ public sealed class Cryptocurrency
     public decimal? CirculatingSupply { get; set; }
 
     public FinancialInstrument Instrument { get; set; } = null!;
+}
+
+public sealed class Sector
+{
+    public int SectorId { get; set; }
+    public string SectorName { get; set; } = string.Empty;
+
+    public List<Industry> Industries { get; set; } = [];
+}
+
+public sealed class Industry
+{
+    public int IndustryId { get; set; }
+    public string IndustryName { get; set; } = string.Empty;
+    public int SectorId { get; set; }
+
+    public Sector Sector { get; set; } = null!;
+    public List<Stock> Stocks { get; set; } = [];
 }

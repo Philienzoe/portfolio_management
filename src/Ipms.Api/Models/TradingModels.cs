@@ -15,7 +15,6 @@ public sealed class TransactionRecord
     public TransactionKind TransactionType { get; set; }
     public decimal Quantity { get; set; }
     public decimal PricePerUnit { get; set; }
-    public decimal TotalAmount { get; private set; }
     public DateTime TransactionDate { get; set; }
     public decimal Fees { get; set; }
     public string? Notes { get; set; }
@@ -46,6 +45,32 @@ public sealed class HistoricalPrice
     public decimal LowPrice { get; set; }
     public decimal ClosePrice { get; set; }
     public decimal AdjustedClose { get; set; }
+    public long? Volume { get; set; }
+
+    public FinancialInstrument Instrument { get; set; } = null!;
+}
+
+public sealed class IntradayPrice
+{
+    public int IntradayPriceId { get; set; }
+    public int InstrumentId { get; set; }
+    public DateTime PriceTimeUtc { get; set; }
+    public decimal OpenPrice { get; set; }
+    public decimal HighPrice { get; set; }
+    public decimal LowPrice { get; set; }
+    public decimal ClosePrice { get; set; }
+    public long? Volume { get; set; }
+
+    public FinancialInstrument Instrument { get; set; } = null!;
+}
+
+public sealed class RealtimePriceSnapshot
+{
+    public int RealtimePriceSnapshotId { get; set; }
+    public int InstrumentId { get; set; }
+    public DateTime SnapshotTimeUtc { get; set; }
+    public DateTime? SourceTimeUtc { get; set; }
+    public decimal Price { get; set; }
     public long? Volume { get; set; }
 
     public FinancialInstrument Instrument { get; set; } = null!;

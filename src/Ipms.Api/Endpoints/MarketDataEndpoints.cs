@@ -117,6 +117,12 @@ public static class MarketDataEndpoints
             result.InsertedPricePoints,
             result.UpdatedPricePoints,
             result.ProcessedPricePoints,
+            result.InsertedIntradayPoints,
+            result.UpdatedIntradayPoints,
+            result.ProcessedIntradayPoints,
+            result.InsertedRealtimeSnapshots,
+            result.UpdatedRealtimeSnapshots,
+            result.ProcessedRealtimeSnapshots,
             result.CreatedInstrument,
             result.ImportedAtUtc,
             "Yahoo Finance");

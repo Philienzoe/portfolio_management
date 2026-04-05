@@ -15,4 +15,6 @@ public sealed class MarketDataSchedulerOptions
     public bool Enabled { get; init; } = true;
     public bool RunOnStartup { get; init; } = true;
     public int RefreshIntervalSeconds { get; init; } = 60;
+    public int MaxConcurrentInstrumentRefreshes { get; init; } = 8;
+    public string[] PriorityTickerSymbols { get; init; } = [];
 }

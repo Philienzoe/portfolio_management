@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Http.Json;
 using Ipms.Api.Data;
@@ -10,11 +11,13 @@ namespace Ipms.Api.Services;
 public sealed class YahooFinanceMarketDataService(
     HttpClient httpClient,
     IpmsDbContext dbContext,
+    IServiceScopeFactory scopeFactory,
     IOptions<MarketDataOptions> options,
     ILogger<YahooFinanceMarketDataService> logger) : IMarketDataService
 {
     private readonly HttpClient _httpClient = httpClient;
     private readonly IpmsDbContext _dbContext = dbContext;
+    private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
     private readonly MarketDataOptions _options = options.Value;
     private readonly ILogger<YahooFinanceMarketDataService> _logger = logger;
 
@@ -76,23 +79,33 @@ public sealed class YahooFinanceMarketDataService(
             .Select(item => item.TickerSymbol)
             .ToListAsync(cancellationToken);
 
-        var errors = new List<string>();
+        var errors = new ConcurrentBag<string>();
         var successCount = 0;
+        var maxConcurrency = Math.Max(1, _options.Scheduler.MaxConcurrentInstrumentRefreshes);
 
-        foreach (var ticker in tickers)
-        {
-            var result = await ImportByTickerAsync(
-                new MarketDataImportCommand(ticker, command.Range, command.Interval, false),
-                cancellationToken);
-
-            if (result.Success)
+        await Parallel.ForEachAsync(
+            tickers,
+            new ParallelOptions
             {
-                successCount++;
-                continue;
-            }
+                CancellationToken = cancellationToken,
+                MaxDegreeOfParallelism = maxConcurrency
+            },
+            async (ticker, token) =>
+            {
+                using var scope = _scopeFactory.CreateScope();
+                var marketDataService = scope.ServiceProvider.GetRequiredService<IMarketDataService>();
+                var result = await marketDataService.ImportByTickerAsync(
+                    new MarketDataImportCommand(ticker, command.Range, command.Interval, false),
+                    token);
 
-            errors.Add($"{ticker}: {result.ErrorMessage}");
-        }
+                if (result.Success)
+                {
+                    Interlocked.Increment(ref successCount);
+                    return;
+                }
+
+                errors.Add($"{ticker}: {result.ErrorMessage}");
+            });
 
         var failedCount = tickers.Count - successCount;
         var status = failedCount == 0 ? "SUCCESS" : successCount == 0 ? "FAILED" : "PARTIAL";
@@ -105,7 +118,7 @@ public sealed class YahooFinanceMarketDataService(
             tickers.Count,
             successCount,
             failedCount,
-            errors);
+            errors.OrderBy(item => item).ToList());
     }
 
     private async Task<MarketDataImportResult> RefreshInternalAsync(

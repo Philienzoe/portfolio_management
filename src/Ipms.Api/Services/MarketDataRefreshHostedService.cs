@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Microsoft.Extensions.Options;
 
 namespace Ipms.Api.Services;
@@ -41,14 +42,7 @@ public sealed class MarketDataRefreshHostedService(
         {
             _state.MarkStarted(trigger);
 
-            using var scope = _scopeFactory.CreateScope();
-            var marketDataService = scope.ServiceProvider.GetRequiredService<IMarketDataService>();
-            var result = await marketDataService.RefreshAllTrackedInstrumentsAsync(
-                new MarketDataBulkRefreshCommand(
-                    _options.DefaultRange,
-                    _options.DefaultInterval,
-                    trigger),
-                cancellationToken);
+            var result = await RefreshScheduledTickersAsync(trigger, cancellationToken);
 
             _state.MarkCompleted(result);
             _logger.LogInformation(
@@ -65,5 +59,74 @@ public sealed class MarketDataRefreshHostedService(
             _state.MarkFailed(trigger, exception);
             _logger.LogError(exception, "Scheduled market data refresh failed.");
         }
+    }
+
+    private async Task<MarketDataBulkRefreshResult> RefreshScheduledTickersAsync(
+        string trigger,
+        CancellationToken cancellationToken)
+    {
+        var priorityTickers = _options.Scheduler.PriorityTickerSymbols
+            .Where(ticker => !string.IsNullOrWhiteSpace(ticker))
+            .Select(ticker => ticker.Trim().ToUpperInvariant())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        if (priorityTickers.Length == 0)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var marketDataService = scope.ServiceProvider.GetRequiredService<IMarketDataService>();
+            return await marketDataService.RefreshAllTrackedInstrumentsAsync(
+                new MarketDataBulkRefreshCommand(
+                    _options.DefaultRange,
+                    _options.DefaultInterval,
+                    trigger),
+                cancellationToken);
+        }
+
+        var startedAtUtc = DateTime.UtcNow;
+        var successCount = 0;
+        var errors = new ConcurrentBag<string>();
+        var maxConcurrency = Math.Max(1, _options.Scheduler.MaxConcurrentInstrumentRefreshes);
+
+        await Parallel.ForEachAsync(
+            priorityTickers,
+            new ParallelOptions
+            {
+                CancellationToken = cancellationToken,
+                MaxDegreeOfParallelism = maxConcurrency
+            },
+            async (ticker, token) =>
+            {
+                using var scope = _scopeFactory.CreateScope();
+                var marketDataService = scope.ServiceProvider.GetRequiredService<IMarketDataService>();
+                var result = await marketDataService.ImportByTickerAsync(
+                    new MarketDataImportCommand(
+                        ticker,
+                        _options.DefaultRange,
+                        _options.DefaultInterval,
+                        false),
+                    token);
+
+                if (result.Success)
+                {
+                    Interlocked.Increment(ref successCount);
+                    return;
+                }
+
+                errors.Add($"{ticker}: {result.ErrorMessage}");
+            });
+
+        var failedCount = priorityTickers.Length - successCount;
+        var status = failedCount == 0 ? "SUCCESS" : successCount == 0 ? "FAILED" : "PARTIAL";
+
+        return new MarketDataBulkRefreshResult(
+            trigger,
+            status,
+            startedAtUtc,
+            DateTime.UtcNow,
+            priorityTickers.Length,
+            successCount,
+            failedCount,
+            errors.OrderBy(item => item).ToList());
     }
 }

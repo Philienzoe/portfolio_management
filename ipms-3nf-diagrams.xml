@@ -1,0 +1,693 @@
+﻿<mxfile host="app.diagrams.net" version="24.7.17" type="device">
+  <diagram id="with-arrows" name="With Arrows">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="wa_title" value="4.3 Normalization to Third Normal Form (3NF) - With Relationship Arrows" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=28;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="20" width="1300" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_legend" value="&lt;div style=&apos;border:2px solid #111;background:#fff;padding:10px 16px;width:250px;font-family:Arial,Helvetica,sans-serif;&apos;&gt;&lt;div style=&apos;color:#C0392B;font-size:18px;text-align:center;&apos;&gt;Text: Primary Key&lt;/div&gt;&lt;div style=&apos;color:#27AE60;font-size:18px;text-align:center;margin-top:6px;&apos;&gt;Text: Foreign Key&lt;/div&gt;&lt;/div&gt;" style="shape=rect;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="70" width="300" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_subtype_box" value="" style="shape=rect;html=1;rounded=0;fillColor=none;strokeColor=#666666;dashed=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="740" y="640" width="760" height="300" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_users_label" value="USERS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="110" y="180" width="512" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_users_user_id" value="user_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="110" y="202" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_users_email" value="email" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="188" y="202" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_users_password_hash" value="password_hash" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="266" y="202" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_users_first_name" value="first_name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="370" y="202" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_users_last_name" value="last_name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="456" y="202" width="80" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_users_created_at" value="created_at" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="536" y="202" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_portfolios_label" value="PORTFOLIOS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="110" y="280" width="542" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_portfolios_portfolio_id" value="portfolio_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="110" y="302" width="98" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_portfolios_user_id" value="user_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="208" y="302" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_portfolios_portfolio_name" value="portfolio_name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="286" y="302" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_portfolios_description" value="description" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="396" y="302" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_portfolios_currency" value="currency" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="488" y="302" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_portfolios_created_at" value="created_at" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="566" y="302" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_transactions_label" value="TRANSACTIONS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="110" y="400" width="900" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_transactions_transaction_id" value="transaction_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="110" y="422" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_transactions_portfolio_id" value="portfolio_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="220" y="422" width="98" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_transactions_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="318" y="422" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_transactions_transaction_type" value="transaction_type" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="422" y="422" width="122" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_transactions_quantity" value="quantity" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="544" y="422" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_transactions_price_per_unit" value="price_per_unit" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="622" y="422" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_transactions_transaction_date" value="transaction_date" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="732" y="422" width="122" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_transactions_fees" value="fees" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="854" y="422" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_transactions_notes" value="notes" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="932" y="422" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_holdings_label" value="PORTFOLIO_HOLDINGS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="170" y="520" width="476" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_holdings_portfolio_id" value="portfolio_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#8E44AD;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="170" y="542" width="98" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_holdings_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#8E44AD;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="268" y="542" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_holdings_quantity" value="quantity" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="372" y="542" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_holdings_average_cost" value="average_cost" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="450" y="542" width="98" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_holdings_last_updated" value="last_updated" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="548" y="542" width="98" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_fi_label" value="FINANCIAL_INSTRUMENTS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="820" y="180" width="604" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_fi_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="820" y="202" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_fi_ticker_symbol" value="ticker_symbol" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="924" y="202" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_fi_instrument_type" value="instrument_type" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1028" y="202" width="116" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_fi_name" value="name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1144" y="202" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_fi_current_price" value="current_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1222" y="202" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_fi_last_updated" value="last_updated" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1326" y="202" width="98" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_historical_label" value="HISTORICAL_PRICES" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="980" y="290" width="800" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_historical_price_id" value="price_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="980" y="312" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_historical_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1058" y="312" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_historical_price_date" value="price_date" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1162" y="312" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_historical_open_price" value="open_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1248" y="312" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_historical_high_price" value="high_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1334" y="312" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_historical_low_price" value="low_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="312" width="80" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_historical_close_price" value="close_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="312" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_historical_adjusted_close" value="adjusted_close" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1592" y="312" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_historical_volume" value="volume" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1702" y="312" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_intraday_label" value="INTRADAY_PRICES" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="980" y="390" width="764" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_intraday_intraday_price_id" value="intraday_price_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="980" y="412" width="128" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_intraday_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1108" y="412" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_intraday_price_time_utc" value="price_time_utc" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1212" y="412" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_intraday_open_price" value="open_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1322" y="412" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_intraday_high_price" value="high_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1408" y="412" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_intraday_low_price" value="low_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1494" y="412" width="80" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_intraday_close_price" value="close_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1574" y="412" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_intraday_volume" value="volume" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1666" y="412" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_realtime_label" value="REALTIME_PRICE_SNAPSHOTS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="980" y="490" width="680" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_realtime_realtime_price_snapshot_id" value="realtime_price_snapshot_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="980" y="512" width="176" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_realtime_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1156" y="512" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_realtime_snapshot_time_utc" value="snapshot_time_utc" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="512" width="128" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_realtime_source_time_utc" value="source_time_utc" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1388" y="512" width="116" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_realtime_price" value="price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1504" y="512" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_realtime_volume" value="volume" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1582" y="512" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_stocks_label" value="STOCKS (Subtype)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="780" y="680" width="672" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_stocks_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#8E44AD;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="702" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_stocks_industry_id" value="industry_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="884" y="702" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_stocks_quote_currency" value="quote_currency" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="976" y="702" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_stocks_market_cap" value="market_cap" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1086" y="702" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_stocks_pe_ratio" value="pe_ratio" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1172" y="702" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_stocks_dividend_yield" value="dividend_yield" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="702" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_stocks_exchange_id" value="exchange_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="702" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_etfs_label" value="ETFS (Subtype)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="780" y="770" width="690" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_etfs_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#8E44AD;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="792" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_etfs_asset_class" value="asset_class" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="884" y="792" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_etfs_expense_ratio" value="expense_ratio" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="976" y="792" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_etfs_issuer" value="issuer" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="792" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_etfs_tracking_index" value="tracking_index" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1158" y="792" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_etfs_quote_currency" value="quote_currency" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1268" y="792" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_etfs_exchange_id" value="exchange_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1378" y="792" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_crypto_label" value="CRYPTOCURRENCIES (Subtype)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="780" y="860" width="776" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_crypto_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#8E44AD;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="882" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_crypto_base_asset_symbol" value="base_asset_symbol" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="884" y="882" width="128" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_crypto_quote_currency" value="quote_currency" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1012" y="882" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_crypto_blockchain" value="blockchain" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1122" y="882" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_crypto_hashing_algorithm" value="hashing_algorithm" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1208" y="882" width="128" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_crypto_max_supply" value="max_supply" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1336" y="882" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_crypto_circulating_supply" value="circulating_supply" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1422" y="882" width="134" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_exchanges_label" value="STOCK_EXCHANGES" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="690" width="482" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_exchanges_exchange_id" value="exchange_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="712" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_exchanges_mic_code" value="mic_code" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1632" y="712" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_exchanges_name" value="name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1710" y="712" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_exchanges_country" value="country" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1788" y="712" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_exchanges_city" value="city" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1866" y="712" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_exchanges_timezone" value="timezone" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1944" y="712" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_sectors_label" value="SECTORS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="830" width="250" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_sectors_sector_id" value="sector_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="852" width="80" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_sectors_sector_name" value="sector_name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="852" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_industries_label" value="INDUSTRIES" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="920" width="276" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_industries_industry_id" value="industry_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="942" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_industries_industry_name" value="industry_name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1632" y="942" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_industries_sector_id" value="sector_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1736" y="942" width="80" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_note" value="Arrows = Foreign Key relationships&amp;#xa;Show table dependencies&amp;#xa;Ensure data consistency&amp;#xa;Represent 1:N or M:N relationships&amp;#xa;Help in query joins and database integrity" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1135" width="1100" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="wa_portfolios_user_id" target="wa_users_user_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="wa_transactions_portfolio_id" target="wa_portfolios_portfolio_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="wa_transactions_instrument_id" target="wa_fi_instrument_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="wa_holdings_portfolio_id" target="wa_portfolios_portfolio_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="wa_holdings_instrument_id" target="wa_fi_instrument_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="wa_historical_instrument_id" target="wa_fi_instrument_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="wa_intraday_instrument_id" target="wa_fi_instrument_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="wa_realtime_instrument_id" target="wa_fi_instrument_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="wa_stocks_instrument_id" target="wa_fi_instrument_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="wa_etfs_instrument_id" target="wa_fi_instrument_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="wa_crypto_instrument_id" target="wa_fi_instrument_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="wa_stocks_industry_id" target="wa_industries_industry_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="wa_stocks_exchange_id" target="wa_exchanges_exchange_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="wa_etfs_exchange_id" target="wa_exchanges_exchange_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="wa_edge_15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="wa_industries_sector_id" target="wa_sectors_sector_id">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="without-arrows" name="Without Arrows">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="wo_title" value="4.3 Normalization to Third Normal Form (3NF) - Structure Only" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=28;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="20" width="1300" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_legend" value="&lt;div style=&apos;border:2px solid #111;background:#fff;padding:10px 16px;width:250px;font-family:Arial,Helvetica,sans-serif;&apos;&gt;&lt;div style=&apos;color:#C0392B;font-size:18px;text-align:center;&apos;&gt;Text: Primary Key&lt;/div&gt;&lt;div style=&apos;color:#27AE60;font-size:18px;text-align:center;margin-top:6px;&apos;&gt;Text: Foreign Key&lt;/div&gt;&lt;/div&gt;" style="shape=rect;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="70" width="300" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_subtype_box" value="" style="shape=rect;html=1;rounded=0;fillColor=none;strokeColor=#666666;dashed=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="740" y="640" width="760" height="300" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_users_label" value="USERS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="110" y="180" width="512" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_users_user_id" value="user_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="110" y="202" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_users_email" value="email" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="188" y="202" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_users_password_hash" value="password_hash" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="266" y="202" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_users_first_name" value="first_name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="370" y="202" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_users_last_name" value="last_name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="456" y="202" width="80" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_users_created_at" value="created_at" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="536" y="202" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_portfolios_label" value="PORTFOLIOS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="110" y="280" width="542" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_portfolios_portfolio_id" value="portfolio_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="110" y="302" width="98" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_portfolios_user_id" value="user_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="208" y="302" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_portfolios_portfolio_name" value="portfolio_name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="286" y="302" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_portfolios_description" value="description" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="396" y="302" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_portfolios_currency" value="currency" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="488" y="302" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_portfolios_created_at" value="created_at" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="566" y="302" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_transactions_label" value="TRANSACTIONS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="110" y="400" width="900" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_transactions_transaction_id" value="transaction_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="110" y="422" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_transactions_portfolio_id" value="portfolio_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="220" y="422" width="98" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_transactions_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="318" y="422" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_transactions_transaction_type" value="transaction_type" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="422" y="422" width="122" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_transactions_quantity" value="quantity" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="544" y="422" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_transactions_price_per_unit" value="price_per_unit" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="622" y="422" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_transactions_transaction_date" value="transaction_date" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="732" y="422" width="122" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_transactions_fees" value="fees" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="854" y="422" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_transactions_notes" value="notes" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="932" y="422" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_holdings_label" value="PORTFOLIO_HOLDINGS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="170" y="520" width="476" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_holdings_portfolio_id" value="portfolio_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#8E44AD;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="170" y="542" width="98" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_holdings_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#8E44AD;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="268" y="542" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_holdings_quantity" value="quantity" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="372" y="542" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_holdings_average_cost" value="average_cost" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="450" y="542" width="98" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_holdings_last_updated" value="last_updated" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="548" y="542" width="98" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_fi_label" value="FINANCIAL_INSTRUMENTS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="820" y="180" width="604" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_fi_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="820" y="202" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_fi_ticker_symbol" value="ticker_symbol" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="924" y="202" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_fi_instrument_type" value="instrument_type" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1028" y="202" width="116" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_fi_name" value="name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1144" y="202" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_fi_current_price" value="current_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1222" y="202" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_fi_last_updated" value="last_updated" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1326" y="202" width="98" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_historical_label" value="HISTORICAL_PRICES" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="980" y="290" width="800" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_historical_price_id" value="price_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="980" y="312" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_historical_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1058" y="312" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_historical_price_date" value="price_date" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1162" y="312" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_historical_open_price" value="open_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1248" y="312" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_historical_high_price" value="high_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1334" y="312" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_historical_low_price" value="low_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="312" width="80" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_historical_close_price" value="close_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="312" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_historical_adjusted_close" value="adjusted_close" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1592" y="312" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_historical_volume" value="volume" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1702" y="312" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_intraday_label" value="INTRADAY_PRICES" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="980" y="390" width="764" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_intraday_intraday_price_id" value="intraday_price_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="980" y="412" width="128" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_intraday_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1108" y="412" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_intraday_price_time_utc" value="price_time_utc" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1212" y="412" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_intraday_open_price" value="open_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1322" y="412" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_intraday_high_price" value="high_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1408" y="412" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_intraday_low_price" value="low_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1494" y="412" width="80" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_intraday_close_price" value="close_price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1574" y="412" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_intraday_volume" value="volume" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1666" y="412" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_realtime_label" value="REALTIME_PRICE_SNAPSHOTS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="980" y="490" width="680" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_realtime_realtime_price_snapshot_id" value="realtime_price_snapshot_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="980" y="512" width="176" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_realtime_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1156" y="512" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_realtime_snapshot_time_utc" value="snapshot_time_utc" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="512" width="128" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_realtime_source_time_utc" value="source_time_utc" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1388" y="512" width="116" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_realtime_price" value="price" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1504" y="512" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_realtime_volume" value="volume" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1582" y="512" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_stocks_label" value="STOCKS (Subtype)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="780" y="680" width="672" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_stocks_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#8E44AD;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="702" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_stocks_industry_id" value="industry_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="884" y="702" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_stocks_quote_currency" value="quote_currency" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="976" y="702" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_stocks_market_cap" value="market_cap" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1086" y="702" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_stocks_pe_ratio" value="pe_ratio" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1172" y="702" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_stocks_dividend_yield" value="dividend_yield" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="702" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_stocks_exchange_id" value="exchange_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="702" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_etfs_label" value="ETFS (Subtype)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="780" y="770" width="690" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_etfs_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#8E44AD;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="792" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_etfs_asset_class" value="asset_class" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="884" y="792" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_etfs_expense_ratio" value="expense_ratio" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="976" y="792" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_etfs_issuer" value="issuer" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="792" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_etfs_tracking_index" value="tracking_index" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1158" y="792" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_etfs_quote_currency" value="quote_currency" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1268" y="792" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_etfs_exchange_id" value="exchange_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1378" y="792" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_crypto_label" value="CRYPTOCURRENCIES (Subtype)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="780" y="860" width="776" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_crypto_instrument_id" value="instrument_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#8E44AD;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="882" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_crypto_base_asset_symbol" value="base_asset_symbol" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="884" y="882" width="128" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_crypto_quote_currency" value="quote_currency" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1012" y="882" width="110" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_crypto_blockchain" value="blockchain" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1122" y="882" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_crypto_hashing_algorithm" value="hashing_algorithm" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1208" y="882" width="128" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_crypto_max_supply" value="max_supply" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1336" y="882" width="86" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_crypto_circulating_supply" value="circulating_supply" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1422" y="882" width="134" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_exchanges_label" value="STOCK_EXCHANGES" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="690" width="482" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_exchanges_exchange_id" value="exchange_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="712" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_exchanges_mic_code" value="mic_code" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1632" y="712" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_exchanges_name" value="name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1710" y="712" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_exchanges_country" value="country" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1788" y="712" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_exchanges_city" value="city" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1866" y="712" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_exchanges_timezone" value="timezone" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1944" y="712" width="78" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_sectors_label" value="SECTORS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="830" width="250" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_sectors_sector_id" value="sector_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="852" width="80" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_sectors_sector_name" value="sector_name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="852" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_industries_label" value="INDUSTRIES" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=17;fontStyle=1;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="920" width="276" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_industries_industry_id" value="industry_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#C0392B;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="942" width="92" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_industries_industry_name" value="industry_name" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#111111;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1632" y="942" width="104" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_industries_sector_id" value="sector_id" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;strokeColor=#111111;fillColor=#ffffff;fontFamily=Georgia;fontSize=14;fontColor=#27AE60;align=center;verticalAlign=middle;spacingLeft=0;spacingRight=0;" vertex="1" parent="1">
+          <mxGeometry x="1736" y="942" width="80" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="wo_note" value="Same structure and colors, but without relationship arrows so you can add your own connectors manually." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1135" width="1100" height="120" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

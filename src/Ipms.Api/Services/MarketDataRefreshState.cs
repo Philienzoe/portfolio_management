@@ -21,8 +21,8 @@ public sealed class MarketDataRefreshState
     private bool _enabled;
     private bool _isRunning;
     private int _refreshIntervalSeconds;
-    private string _range = "6mo";
-    private string _interval = "1d";
+    private string _range = "1d";
+    private string _interval = "1m";
     private DateTime? _lastStartedAtUtc;
     private DateTime? _lastCompletedAtUtc;
     private string? _lastTrigger;

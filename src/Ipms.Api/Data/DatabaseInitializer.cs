@@ -266,15 +266,26 @@ BEGIN
     INSERT INTO SECTORS (sector_name) VALUES ('Unclassified');
 END;
 
-IF COL_LENGTH('STOCKS', 'sector') IS NOT NULL OR COL_LENGTH('STOCKS', 'industry') IS NOT NULL
+DECLARE @hasLegacySectorColumn BIT = CASE WHEN COL_LENGTH('STOCKS', 'sector') IS NOT NULL THEN 1 ELSE 0 END;
+DECLARE @hasLegacyIndustryColumn BIT = CASE WHEN COL_LENGTH('STOCKS', 'industry') IS NOT NULL THEN 1 ELSE 0 END;
+
+IF @hasLegacySectorColumn = 1 OR @hasLegacyIndustryColumn = 1
 BEGIN
     DECLARE @sql NVARCHAR(MAX) = N'
     ;WITH LegacyClassification AS
     (
         SELECT
             instrument_id,
-            NULLIF(LTRIM(RTRIM([sector])), '''') AS raw_sector,
-            NULLIF(LTRIM(RTRIM([industry])), '''') AS raw_industry
+            ' + CASE
+                    WHEN @hasLegacySectorColumn = 1
+                        THEN N'NULLIF(LTRIM(RTRIM([sector])), '''''')'
+                    ELSE N'CAST(NULL AS NVARCHAR(100))'
+                END + N' AS raw_sector,
+            ' + CASE
+                    WHEN @hasLegacyIndustryColumn = 1
+                        THEN N'NULLIF(LTRIM(RTRIM([industry])), '''''')'
+                    ELSE N'CAST(NULL AS NVARCHAR(100))'
+                END + N' AS raw_industry
         FROM STOCKS
     ),
     CleanedClassification AS
@@ -341,16 +352,40 @@ BEGIN
         SELECT
             instrument_id,
             CASE
-                WHEN NULLIF(LTRIM(RTRIM([sector])), '''') IS NOT NULL
-                 AND UPPER(NULLIF(LTRIM(RTRIM([sector])), '''')) IN (''NYSE'', ''NYSE AMERICAN'', ''NYSEARCA'', ''NYSE ARCA'', ''NASDAQ'', ''NASDAQGS'', ''NASDAQGM'', ''NASDAQCM'', ''HKSE'', ''HKEX'', ''CBOE US'', ''NEW YORK STOCK EXCHANGE'', ''HONG KONG STOCK EXCHANGE'')
+                WHEN ' + CASE
+                            WHEN @hasLegacySectorColumn = 1
+                                THEN N'NULLIF(LTRIM(RTRIM([sector])), '''''')'
+                            ELSE N'CAST(NULL AS NVARCHAR(100))'
+                        END + N' IS NOT NULL
+                 AND UPPER(' + CASE
+                                    WHEN @hasLegacySectorColumn = 1
+                                        THEN N'NULLIF(LTRIM(RTRIM([sector])), '''''')'
+                                    ELSE N'CAST(NULL AS NVARCHAR(100))'
+                                END + N') IN (''NYSE'', ''NYSE AMERICAN'', ''NYSEARCA'', ''NYSE ARCA'', ''NASDAQ'', ''NASDAQGS'', ''NASDAQGM'', ''NASDAQCM'', ''HKSE'', ''HKEX'', ''CBOE US'', ''NEW YORK STOCK EXCHANGE'', ''HONG KONG STOCK EXCHANGE'')
                     THEN NULL
-                ELSE NULLIF(LTRIM(RTRIM([sector])), '''')
+                ELSE ' + CASE
+                            WHEN @hasLegacySectorColumn = 1
+                                THEN N'NULLIF(LTRIM(RTRIM([sector])), '''''')'
+                            ELSE N'CAST(NULL AS NVARCHAR(100))'
+                        END + N'
             END AS sector_name,
             CASE
-                WHEN NULLIF(LTRIM(RTRIM([industry])), '''') IS NOT NULL
-                 AND UPPER(NULLIF(LTRIM(RTRIM([industry])), '''')) IN (''NYSE'', ''NYSE AMERICAN'', ''NYSEARCA'', ''NYSE ARCA'', ''NASDAQ'', ''NASDAQGS'', ''NASDAQGM'', ''NASDAQCM'', ''HKSE'', ''HKEX'', ''CBOE US'', ''NEW YORK STOCK EXCHANGE'', ''HONG KONG STOCK EXCHANGE'')
+                WHEN ' + CASE
+                            WHEN @hasLegacyIndustryColumn = 1
+                                THEN N'NULLIF(LTRIM(RTRIM([industry])), '''''')'
+                            ELSE N'CAST(NULL AS NVARCHAR(100))'
+                        END + N' IS NOT NULL
+                 AND UPPER(' + CASE
+                                    WHEN @hasLegacyIndustryColumn = 1
+                                        THEN N'NULLIF(LTRIM(RTRIM([industry])), '''''')'
+                                    ELSE N'CAST(NULL AS NVARCHAR(100))'
+                                END + N') IN (''NYSE'', ''NYSE AMERICAN'', ''NYSEARCA'', ''NYSE ARCA'', ''NASDAQ'', ''NASDAQGS'', ''NASDAQGM'', ''NASDAQCM'', ''HKSE'', ''HKEX'', ''CBOE US'', ''NEW YORK STOCK EXCHANGE'', ''HONG KONG STOCK EXCHANGE'')
                     THEN NULL
-                ELSE NULLIF(LTRIM(RTRIM([industry])), '''')
+                ELSE ' + CASE
+                            WHEN @hasLegacyIndustryColumn = 1
+                                THEN N'NULLIF(LTRIM(RTRIM([industry])), '''''')'
+                            ELSE N'CAST(NULL AS NVARCHAR(100))'
+                        END + N'
             END AS industry_name
         FROM STOCKS
     )

@@ -1,0 +1,291 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3000" height="1600" viewBox="0 0 3000 1600">
+  <defs>
+    <pattern id="smallGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e7e1d8" stroke-width="1"/>
+    </pattern>
+    <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+      <rect width="100" height="100" fill="url(#smallGrid)"/>
+      <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#d8d0c4" stroke-width="1.2"/>
+    </pattern>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#111"/>
+    </marker>
+    <style>
+      .title { font: 700 30px Arial, Helvetica, sans-serif; fill: #111; }
+      .legend-label { font: 600 16px Arial, Helvetica, sans-serif; fill: #111; }
+      .legend-text { font: 16px Arial, Helvetica, sans-serif; }
+      .table-label { font: 600 16px Georgia, "Times New Roman", serif; fill: #111; }
+      .cell { fill: #fff; stroke: #111; stroke-width: 1.8; }
+      .field { font: 13px Georgia, "Times New Roman", serif; fill: #111; dominant-baseline: middle; text-anchor: middle; }
+      .pk { fill: #d63b36; }
+      .fk { fill: #8cc56e; }
+      .connector { fill: none; stroke: #111; stroke-width: 2.5; marker-end: url(#arrow); }
+      .note { font: 18px Georgia, "Times New Roman", serif; fill: #111; }
+    </style>
+  </defs>
+
+  <rect width="3000" height="1600" fill="#faf8f3"/>
+  <rect x="40" y="50" width="2920" height="1420" fill="url(#grid)" stroke="#cfc7ba" stroke-width="2"/>
+
+  <text x="70" y="35" class="title">Investment Portfolio Management System - Third Normal Form (3NF)</text>
+
+  <g transform="translate(120 80)">
+    <rect x="0" y="0" width="380" height="90" fill="#fff" stroke="#111" stroke-width="2"/>
+    <text x="190" y="33" class="legend-text pk" text-anchor="middle">Text: Primary Key</text>
+    <text x="190" y="57" class="legend-text fk" text-anchor="middle">Text: Foreign Key</text>
+    <text x="190" y="78" class="legend-label" text-anchor="middle">Current IPMS schema layout</text>
+  </g>
+
+  <g transform="translate(120 220)">
+    <text x="0" y="-14" class="table-label">USERS</text>
+    <rect class="cell" x="0" y="0" width="95" height="52"/>
+    <rect class="cell" x="95" y="0" width="120" height="52"/>
+    <rect class="cell" x="215" y="0" width="150" height="52"/>
+    <rect class="cell" x="365" y="0" width="105" height="52"/>
+    <rect class="cell" x="470" y="0" width="105" height="52"/>
+    <rect class="cell" x="575" y="0" width="110" height="52"/>
+    <text class="field pk" x="47.5" y="26">user_id</text>
+    <text class="field" x="155" y="26">email</text>
+    <text class="field" x="290" y="26">password_hash</text>
+    <text class="field" x="417.5" y="26">first_name</text>
+    <text class="field" x="522.5" y="26">last_name</text>
+    <text class="field" x="630" y="26">created_at</text>
+  </g>
+
+  <g transform="translate(120 370)">
+    <text x="0" y="-14" class="table-label">PORTFOLIOS</text>
+    <rect class="cell" x="0" y="0" width="105" height="52"/>
+    <rect class="cell" x="105" y="0" width="90" height="52"/>
+    <rect class="cell" x="195" y="0" width="125" height="52"/>
+    <rect class="cell" x="320" y="0" width="125" height="52"/>
+    <rect class="cell" x="445" y="0" width="90" height="52"/>
+    <rect class="cell" x="535" y="0" width="100" height="52"/>
+    <text class="field pk" x="52.5" y="26">portfolio_id</text>
+    <text class="field fk" x="150" y="26">user_id</text>
+    <text class="field" x="257.5" y="26">portfolio_name</text>
+    <text class="field" x="382.5" y="26">description</text>
+    <text class="field" x="490" y="26">currency</text>
+    <text class="field" x="585" y="26">created_at</text>
+  </g>
+
+  <g transform="translate(120 540)">
+    <text x="0" y="-14" class="table-label">TRANSACTIONS</text>
+    <rect class="cell" x="0" y="0" width="110" height="52"/>
+    <rect class="cell" x="110" y="0" width="95" height="52"/>
+    <rect class="cell" x="205" y="0" width="105" height="52"/>
+    <rect class="cell" x="310" y="0" width="140" height="52"/>
+    <rect class="cell" x="450" y="0" width="90" height="52"/>
+    <rect class="cell" x="540" y="0" width="110" height="52"/>
+    <rect class="cell" x="650" y="0" width="120" height="52"/>
+    <rect class="cell" x="770" y="0" width="70" height="52"/>
+    <rect class="cell" x="840" y="0" width="85" height="52"/>
+    <text class="field pk" x="55" y="26">transaction_id</text>
+    <text class="field fk" x="157.5" y="26">portfolio_id</text>
+    <text class="field fk" x="257.5" y="26">instrument_id</text>
+    <text class="field" x="380" y="26">transaction_type</text>
+    <text class="field" x="495" y="26">quantity</text>
+    <text class="field" x="595" y="26">price_per_unit</text>
+    <text class="field" x="710" y="26">transaction_date</text>
+    <text class="field" x="805" y="26">fees</text>
+    <text class="field" x="882.5" y="26">notes</text>
+  </g>
+
+  <g transform="translate(280 710)">
+    <text x="0" y="-14" class="table-label">PORTFOLIO_HOLDINGS</text>
+    <rect class="cell" x="0" y="0" width="100" height="52"/>
+    <rect class="cell" x="100" y="0" width="110" height="52"/>
+    <rect class="cell" x="210" y="0" width="90" height="52"/>
+    <rect class="cell" x="300" y="0" width="120" height="52"/>
+    <rect class="cell" x="420" y="0" width="110" height="52"/>
+    <text class="field fk" x="50" y="26">portfolio_id</text>
+    <text class="field fk" x="155" y="26">instrument_id</text>
+    <text class="field" x="255" y="26">quantity</text>
+    <text class="field" x="360" y="26">average_cost</text>
+    <text class="field" x="475" y="26">last_updated</text>
+  </g>
+
+  <g transform="translate(1200 260)">
+    <text x="0" y="-14" class="table-label">FINANCIAL_INSTRUMENTS</text>
+    <rect class="cell" x="0" y="0" width="110" height="52"/>
+    <rect class="cell" x="110" y="0" width="120" height="52"/>
+    <rect class="cell" x="230" y="0" width="130" height="52"/>
+    <rect class="cell" x="360" y="0" width="120" height="52"/>
+    <rect class="cell" x="480" y="0" width="105" height="52"/>
+    <rect class="cell" x="585" y="0" width="115" height="52"/>
+    <text class="field pk" x="55" y="26">instrument_id</text>
+    <text class="field" x="170" y="26">ticker_symbol</text>
+    <text class="field" x="295" y="26">instrument_type</text>
+    <text class="field" x="420" y="26">name</text>
+    <text class="field" x="532.5" y="26">current_price</text>
+    <text class="field" x="642.5" y="26">last_updated</text>
+  </g>
+
+  <g transform="translate(2150 220)">
+    <text x="0" y="-14" class="table-label">HISTORICAL_PRICES</text>
+    <rect class="cell" x="0" y="0" width="85" height="52"/>
+    <rect class="cell" x="85" y="0" width="95" height="52"/>
+    <rect class="cell" x="180" y="0" width="100" height="52"/>
+    <rect class="cell" x="280" y="0" width="78" height="52"/>
+    <rect class="cell" x="358" y="0" width="78" height="52"/>
+    <rect class="cell" x="436" y="0" width="78" height="52"/>
+    <rect class="cell" x="514" y="0" width="78" height="52"/>
+    <rect class="cell" x="592" y="0" width="110" height="52"/>
+    <rect class="cell" x="702" y="0" width="70" height="52"/>
+    <text class="field pk" x="42.5" y="26">price_id</text>
+    <text class="field fk" x="132.5" y="26">instrument_id</text>
+    <text class="field" x="230" y="26">price_date</text>
+    <text class="field" x="319" y="26">open_price</text>
+    <text class="field" x="397" y="26">high_price</text>
+    <text class="field" x="475" y="26">low_price</text>
+    <text class="field" x="553" y="26">close_price</text>
+    <text class="field" x="647" y="26">adjusted_close</text>
+    <text class="field" x="737" y="26">volume</text>
+  </g>
+
+  <g transform="translate(2150 420)">
+    <text x="0" y="-14" class="table-label">INTRADAY_PRICES</text>
+    <rect class="cell" x="0" y="0" width="135" height="52"/>
+    <rect class="cell" x="135" y="0" width="95" height="52"/>
+    <rect class="cell" x="230" y="0" width="115" height="52"/>
+    <rect class="cell" x="345" y="0" width="75" height="52"/>
+    <rect class="cell" x="420" y="0" width="75" height="52"/>
+    <rect class="cell" x="495" y="0" width="75" height="52"/>
+    <rect class="cell" x="570" y="0" width="75" height="52"/>
+    <rect class="cell" x="645" y="0" width="70" height="52"/>
+    <text class="field pk" x="67.5" y="26">intraday_price_id</text>
+    <text class="field fk" x="182.5" y="26">instrument_id</text>
+    <text class="field" x="287.5" y="26">price_time_utc</text>
+    <text class="field" x="382.5" y="26">open_price</text>
+    <text class="field" x="457.5" y="26">high_price</text>
+    <text class="field" x="532.5" y="26">low_price</text>
+    <text class="field" x="607.5" y="26">close_price</text>
+    <text class="field" x="680" y="26">volume</text>
+  </g>
+
+  <g transform="translate(2100 620)">
+    <text x="0" y="-14" class="table-label">REALTIME_PRICE_SNAPSHOTS</text>
+    <rect class="cell" x="0" y="0" width="170" height="52"/>
+    <rect class="cell" x="170" y="0" width="95" height="52"/>
+    <rect class="cell" x="265" y="0" width="110" height="52"/>
+    <rect class="cell" x="375" y="0" width="110" height="52"/>
+    <rect class="cell" x="485" y="0" width="80" height="52"/>
+    <rect class="cell" x="565" y="0" width="70" height="52"/>
+    <text class="field pk" x="85" y="26">realtime_snapshot_id</text>
+    <text class="field fk" x="217.5" y="26">instrument_id</text>
+    <text class="field" x="320" y="26">snapshot_time_utc</text>
+    <text class="field" x="430" y="26">source_time_utc</text>
+    <text class="field" x="525" y="26">price</text>
+    <text class="field" x="600" y="26">volume</text>
+  </g>
+
+  <g transform="translate(1080 930)">
+    <text x="0" y="-14" class="table-label">STOCKS</text>
+    <rect class="cell" x="0" y="0" width="110" height="52"/>
+    <rect class="cell" x="110" y="0" width="95" height="52"/>
+    <rect class="cell" x="205" y="0" width="100" height="52"/>
+    <rect class="cell" x="305" y="0" width="95" height="52"/>
+    <rect class="cell" x="400" y="0" width="85" height="52"/>
+    <rect class="cell" x="485" y="0" width="115" height="52"/>
+    <rect class="cell" x="600" y="0" width="95" height="52"/>
+    <text class="field fk" x="55" y="26">instrument_id</text>
+    <text class="field fk" x="157.5" y="26">industry_id</text>
+    <text class="field" x="255" y="26">quote_currency</text>
+    <text class="field" x="352.5" y="26">market_cap</text>
+    <text class="field" x="442.5" y="26">pe_ratio</text>
+    <text class="field" x="542.5" y="26">dividend_yield</text>
+    <text class="field fk" x="647.5" y="26">exchange_id</text>
+  </g>
+
+  <g transform="translate(1360 930)">
+    <text x="0" y="-14" class="table-label">ETFS</text>
+    <rect class="cell" x="0" y="0" width="110" height="52"/>
+    <rect class="cell" x="110" y="0" width="100" height="52"/>
+    <rect class="cell" x="210" y="0" width="105" height="52"/>
+    <rect class="cell" x="315" y="0" width="90" height="52"/>
+    <rect class="cell" x="405" y="0" width="110" height="52"/>
+    <rect class="cell" x="515" y="0" width="100" height="52"/>
+    <rect class="cell" x="615" y="0" width="95" height="52"/>
+    <text class="field fk" x="55" y="26">instrument_id</text>
+    <text class="field" x="160" y="26">asset_class</text>
+    <text class="field" x="262.5" y="26">expense_ratio</text>
+    <text class="field" x="360" y="26">issuer</text>
+    <text class="field" x="460" y="26">tracking_index</text>
+    <text class="field" x="565" y="26">quote_currency</text>
+    <text class="field fk" x="662.5" y="26">exchange_id</text>
+  </g>
+
+  <g transform="translate(1650 930)">
+    <text x="0" y="-14" class="table-label">CRYPTOCURRENCIES</text>
+    <rect class="cell" x="0" y="0" width="110" height="52"/>
+    <rect class="cell" x="110" y="0" width="120" height="52"/>
+    <rect class="cell" x="230" y="0" width="105" height="52"/>
+    <rect class="cell" x="335" y="0" width="95" height="52"/>
+    <rect class="cell" x="430" y="0" width="120" height="52"/>
+    <rect class="cell" x="550" y="0" width="95" height="52"/>
+    <rect class="cell" x="645" y="0" width="130" height="52"/>
+    <text class="field fk" x="55" y="26">instrument_id</text>
+    <text class="field" x="170" y="26">base_asset_symbol</text>
+    <text class="field" x="282.5" y="26">quote_currency</text>
+    <text class="field" x="382.5" y="26">blockchain</text>
+    <text class="field" x="490" y="26">hashing_algorithm</text>
+    <text class="field" x="597.5" y="26">max_supply</text>
+    <text class="field" x="710" y="26">circulating_supply</text>
+  </g>
+
+  <g transform="translate(1460 1170)">
+    <text x="0" y="-14" class="table-label">STOCK_EXCHANGES</text>
+    <rect class="cell" x="0" y="0" width="105" height="52"/>
+    <rect class="cell" x="105" y="0" width="105" height="52"/>
+    <rect class="cell" x="210" y="0" width="95" height="52"/>
+    <rect class="cell" x="305" y="0" width="95" height="52"/>
+    <rect class="cell" x="400" y="0" width="85" height="52"/>
+    <rect class="cell" x="485" y="0" width="95" height="52"/>
+    <text class="field pk" x="52.5" y="26">exchange_id</text>
+    <text class="field" x="157.5" y="26">mic_code</text>
+    <text class="field" x="257.5" y="26">name</text>
+    <text class="field" x="352.5" y="26">country</text>
+    <text class="field" x="442.5" y="26">city</text>
+    <text class="field" x="532.5" y="26">timezone</text>
+  </g>
+
+  <g transform="translate(1080 1170)">
+    <text x="0" y="-14" class="table-label">SECTORS</text>
+    <rect class="cell" x="0" y="0" width="100" height="52"/>
+    <rect class="cell" x="100" y="0" width="130" height="52"/>
+    <text class="field pk" x="50" y="26">sector_id</text>
+    <text class="field" x="165" y="26">sector_name</text>
+  </g>
+
+  <g transform="translate(1080 1330)">
+    <text x="0" y="-14" class="table-label">INDUSTRIES</text>
+    <rect class="cell" x="0" y="0" width="105" height="52"/>
+    <rect class="cell" x="105" y="0" width="135" height="52"/>
+    <rect class="cell" x="240" y="0" width="95" height="52"/>
+    <text class="field pk" x="52.5" y="26">industry_id</text>
+    <text class="field" x="172.5" y="26">industry_name</text>
+    <text class="field fk" x="287.5" y="26">sector_id</text>
+  </g>
+
+  <path class="connector" d="M 270 396 L 80 396 L 80 246 L 168 246"/>
+  <path class="connector" d="M 278 566 L 92 566 L 92 396 L 173 396"/>
+  <path class="connector" d="M 330 736 L 100 736 L 100 396 L 173 396"/>
+  <path class="connector" d="M 378 566 L 1015 566 L 1015 286 L 1255 286"/>
+  <path class="connector" d="M 435 736 L 1045 736 L 1045 286 L 1255 286"/>
+  <path class="connector" d="M 2283 246 L 2055 246 L 2055 286 L 1255 286"/>
+  <path class="connector" d="M 2333 446 L 2065 446 L 2065 286 L 1255 286"/>
+  <path class="connector" d="M 2318 646 L 2050 646 L 2050 286 L 1255 286"/>
+  <path class="connector" d="M 1135 956 L 1135 840 L 1255 840 L 1255 286"/>
+  <path class="connector" d="M 1415 956 L 1415 820 L 1255 820 L 1255 286"/>
+  <path class="connector" d="M 1705 956 L 1705 800 L 1255 800 L 1255 286"/>
+  <path class="connector" d="M 1238 956 L 1238 1210 L 1133 1210 L 1133 1356"/>
+  <path class="connector" d="M 1728 956 L 1728 1210 L 1513 1210 L 1513 1196"/>
+  <path class="connector" d="M 2023 956 L 2023 1150 L 1513 1150 L 1513 1196"/>
+  <path class="connector" d="M 1368 1356 L 1368 1210 L 1130 1210 L 1130 1196"/>
+
+  <text x="70" y="1518" class="note">
+    From the diagram, we can see that each non-key attribute depends only on its primary key, with entity-specific detail split into
+  </text>
+  <text x="70" y="1548" class="note">
+    subtype and reference tables. The current IPMS structure therefore presents a clean Third Normal Form (3NF) style layout.
+  </text>
+</svg>

@@ -137,8 +137,8 @@ Example request:
 {
   "tickerSymbol": "NVDA",
   "createIfMissing": true,
-  "range": "1mo",
-  "interval": "1d"
+  "range": "1d",
+  "interval": "1m"
 }
 ```
 
@@ -157,9 +157,9 @@ Default configuration is in [appsettings.json](/C:/Users/LENOVO/OneDrive/Desktop
 
 - enabled: `true`
 - run on startup: `true`
-- refresh interval: `3` seconds
-- default range: `6mo`
-- default interval: `1d`
+- refresh interval: `60` seconds
+- default range: `1d`
+- default interval: `1m`
 
 ## Market Universe Imports
 

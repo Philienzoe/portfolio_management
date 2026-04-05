@@ -78,9 +78,9 @@ public sealed record AddHistoricalPriceRequest(
 public sealed record MarketDataImportRequest(
     string TickerSymbol,
     bool CreateIfMissing = true,
-    string Range = "6mo",
-    string Interval = "1d");
+    string Range = "1d",
+    string Interval = "1m");
 
 public sealed record MarketDataRefreshRequest(
-    string Range = "6mo",
-    string Interval = "1d");
+    string Range = "1d",
+    string Interval = "1m");
